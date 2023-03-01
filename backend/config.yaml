@@ -1,0 +1,33 @@
+server:
+  port: 8000
+  runEnv: dev
+
+mysql:
+  host: 127.0.0.1
+  port: 3306
+  username: parallels
+  password: mysqlmima
+  database: atm
+  maxIdleConns: 10
+  maxOpenConns: 100
+  connMaxLifetime: 3600
+  initSQL: /x/x/x/y
+
+redis:
+  host: 127.0.0.1
+  port: 6379
+  password: 
+  database: 0
+
+jwt:
+  signingKey: f0QzHfCjBGdt+p
+  expireTime: 604800
+
+upload:
+  path: /x/x/x/
+
+mail:
+  smtp: smtp.qq.com
+  authCode: xxx
+  sender: xxx@qq.com
+
