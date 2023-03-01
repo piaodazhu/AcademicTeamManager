@@ -29,7 +29,7 @@ type JwtConf struct {
 	ExpireTime int    `mapstructure:"expireTime"`
 }
 
-type UploadConf struct {
+type PathConf struct {
 	Path string `mapstructure:"path"`
 }
 
@@ -44,6 +44,6 @@ type Config struct {
 	MysqlConf  *MysqlConf  `mapstructure:"mysql"`
 	RedisConf  *RedisConf  `mapstructure:"redis"`
 	JwtConf    *JwtConf    `mapstructure:"jwt"`
-	UploadConf *UploadConf `mapstructure:"upload"`
+	PathConf   *PathConf   `mapstructure:"upload"`
 	MailConf   *MailConf   `mapstructure:"mail"`
 }

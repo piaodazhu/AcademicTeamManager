@@ -39,3 +39,14 @@ type UserForgetPassParams struct {
 	Password   string
 	VerifyCode string `json:"code" binding:"required,len=6"`
 }
+
+type UserToken struct {
+	Uid   int64  `json:"uid"`
+	Token string `json:"token"`
+}
+
+type UserInfo struct {
+	Name    string `json:"name"`
+	Email   string `json:"email"`
+	Type int    `json:"type"`
+}
