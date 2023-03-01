@@ -69,11 +69,10 @@ type ProjectInfo struct {
 
 type ProjectExcelRecord struct {
 	Name      string `json:"name"`
-	Cid       int64  `json:"cid"`
 	BeginTime string `json:"beginTime"`
 	OverTime  string `json:"overTime"`
-	Remarks   string `json:"remarks"`
 	Status    string `json:"status"`
+	Remarks   string `json:"remarks"`
 }
 
 type Outputs struct {

@@ -71,8 +71,8 @@ type StudentExcelRecord struct {
 	Name           string `json:"name"`
 	Phone          string `json:"phone"`
 	Email          string `json:"email"`
-	LastDiscussion int64  `json:"lastdis"`
-	NextDiscussion int64  `json:"nextdis"`
-	Status         int    `json:"status"`
+	LastDiscussion string  `json:"lastdis"`
+	NextDiscussion string  `json:"nextdis"`
+	Status         string    `json:"status"`
 	Remark         string `json:"remark"`
 }

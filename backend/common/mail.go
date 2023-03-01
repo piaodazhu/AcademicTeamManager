@@ -10,7 +10,7 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-func SendMail(email, content string) error {
+func SendVerifyCode(email, content string) error {
 	smtp := global.Conf.MailConf.SmtpServer
 	secret := global.Conf.MailConf.AuthCode
 	sender := global.Conf.MailConf.Sender
@@ -32,7 +32,7 @@ func SendMail(email, content string) error {
 }
 
 
-func SendMailToCustomer(mp model.MailParam) error {
+func SendMail(mp model.MailParam) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", mp.Sender)
 	m.SetHeader("To", mp.Receiver)

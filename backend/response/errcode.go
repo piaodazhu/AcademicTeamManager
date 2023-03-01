@@ -13,7 +13,7 @@ const (
 
 	ErrCodeUserHasExist         = 10001 // 用户已经存在
 	ErrCodeUserNotExist         = 10002 // 用户不存在
-	ErrCOdeUserEmailOrPass      = 10003 // 用户邮箱或密码错误
+	ErrCodeUserEmailOrPass      = 10003 // 用户邮箱或密码错误
 	ErrCodeVerityCodeSendFailed = 10004 // 验证码发送失败
 	ErrCodeVerityCodeInvalid    = 10005 // 验证码无效
 	ErrCodeEmailFormatInvalid   = 10008 // 邮箱格式无效
@@ -43,7 +43,7 @@ var msg = map[int]string{
 	ErrCodeFileUploadFailed:     "file upload failed",
 	ErrCodeUserHasExist:         "user has exist",
 	ErrCodeUserNotExist:         "user not exist",
-	ErrCOdeUserEmailOrPass:      "user email or password error",
+	ErrCodeUserEmailOrPass:      "user email or password error",
 	ErrCodeVerityCodeSendFailed: "verify code send failed",
 	ErrCodeVerityCodeInvalid:    "verify code invalid",
 	ErrCodeEmailFormatInvalid:   "email format invalid",

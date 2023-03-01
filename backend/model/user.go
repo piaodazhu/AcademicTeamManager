@@ -10,9 +10,6 @@ type User struct {
 	SubscribeExpired int64  `gorm:"expired"`
 }
 
-type UserGetInfoParams struct {
-}
-
 type UserDeleteParams struct {
 	Email      string `json:"email" binding:"required, email"`
 	VerifyCode string `json:"code" binding:"required,len=6"`

@@ -62,10 +62,9 @@ type OutputInfo struct {
 }
 
 type OutputExcelRecord struct {
-	Id          int64   `json:"id"`
 	Name        string  `json:"name"`
-	Type        int     `json:"type"`
+	Type        string     `json:"type"`
 	Weight       float64 `json:"weight"`
 	Description string  `json:"description"`
-	Status      int     `json:"status"`
+	Status      string     `json:"status"`
 }
