@@ -21,16 +21,16 @@ const (
 
 	ErrCodeCustomerHasExist = 20001 // 客户名称已经存在
 
-	ErrCodePayFailed = 20001 // 支付宝支付失败
+	ErrCodePayFailed = 60001 // 支付宝支付失败
 
-	ErrCodeFileExportFailed = 30001 // 文件导出失败
+	ErrCodeFileExportFailed = 70001 // 文件导出失败
 
-	ErrCodeProductHasExist = 40001 // 产品名称已经存在
+	ErrCodeProductHasExist = 80001 // 产品名称已经存在
 
-	ErrCodeMailConfigInvalid = 50001 // 邮件服务配置无效
-	ErrCodeMailSendFailed    = 50002 // 邮件发送失败
-	ErrCodeMailSendUnEnable  = 50003 // 邮件服务未开启
-	ErrCodeMailConfigUnSet   = 50004 // 邮件服务未配置
+	ErrCodeMailConfigInvalid = 90001 // 邮件服务配置无效
+	ErrCodeMailSendFailed    = 90002 // 邮件发送失败
+	ErrCodeMailSendUnEnable  = 90003 // 邮件服务未开启
+	ErrCodeMailConfigUnSet   = 90004 // 邮件服务未配置
 )
 
 var msg = map[int]string{
@@ -48,6 +48,7 @@ var msg = map[int]string{
 	ErrCodeVerityCodeInvalid:    "verify code invalid",
 	ErrCodeEmailFormatInvalid:   "email format invalid",
 	ErrCodeUserPassResetFailed:  "user password reset failed",
+	ErrCodeCustomerHasExist:     "student has exist",
 	ErrCodeFileExportFailed:     "file export failed",
 	ErrCodeProductHasExist:      "product has exist",
 	ErrCodeMailConfigInvalid:    "mail config invalid",

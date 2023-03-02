@@ -7,7 +7,7 @@ const (
 	STUDENT = "student"
 	PROJECT = "project"
 	OUTPUT  = "output"
-	MAILCONFIG  = "mailconfig"
+	MAILCONFIG  = "mail_config"
 )
 
 const (

@@ -89,63 +89,61 @@ func initRouter() *gin.Engine {
 
 	users := engine.Group("/api/v1/user")
 	{
-		users.GET("/info", api.NewUserAPI().GetInfo)
-		users.GET("/delete", api.NewUserAPI().Delete)
 		users.GET("/verifycode", api.NewUserAPI().GetVerifyCode)
-
 		users.POST("/login", api.NewUserAPI().Login)
 		users.POST("/register", api.NewUserAPI().Register)
 		users.POST("/forgetpass", api.NewUserAPI().ForgetPass)
 
-	}
+		engine.Use(middleware.JwtAuth())
 
-	engine.Use(middleware.JwtAuth())
+		// 以下操作以及后面对操作都要登陆了才能做
+		users.GET("/info", api.NewUserAPI().GetInfo)
+		// get原则上没有禁止带body，但是gin不会管get里面的body
+		users.POST("/delete", api.NewUserAPI().Delete)
+	}
 
 	students := engine.Group("/api/v1/student")
 	{
 		students.GET("/list", api.NewStudentAPI().GetList)
 		students.GET("/option", api.NewStudentAPI().GetOption)
 		students.GET("/info", api.NewStudentAPI().GetInfo)
-		students.GET("/delete", api.NewStudentAPI().Delete)
-
 		students.GET("/export", api.NewStudentAPI().ExportList)
 
 		students.POST("/create", api.NewStudentAPI().CreateInfo)
 		students.POST("/update", api.NewStudentAPI().UpdateInfo)
+		students.POST("/delete", api.NewStudentAPI().Delete)
 
 		students.POST("/send", api.NewStudentAPI().SendEmail)
 	}
 
 	projects := engine.Group("/api/v1/project")
 	{
-		projects.GET("/list",api.NewProjectAPI().GetList)
-		projects.GET("/info",api.NewProjectAPI().GetInfo)
-		projects.GET("/delete", api.NewProjectAPI().Delete)
-
+		projects.GET("/list", api.NewProjectAPI().GetList)
+		projects.GET("/info", api.NewProjectAPI().GetInfo)
 		projects.GET("/export", api.NewProjectAPI().ExportList)
 
 		projects.POST("/create", api.NewProjectAPI().CreateInfo)
 		projects.POST("/update", api.NewProjectAPI().UpdateInfo)
+		projects.POST("/delete", api.NewProjectAPI().Delete)
 	}
 
 	outputs := engine.Group("/api/v1/output")
 	{
 		outputs.GET("/list", api.NewOutputAPI().GetList)
 		outputs.GET("/info", api.NewOutputAPI().GetInfo)
-		outputs.GET("/delete", api.NewOutputAPI().Delete)
+		outputs.GET("/export", api.NewOutputAPI().ExportList)
 
-		outputs.GET("/export",api.NewOutputAPI().ExportList)
-
-		outputs.POST("/create",api.NewOutputAPI().CreateInfo)
+		outputs.POST("/create", api.NewOutputAPI().CreateInfo)
 		outputs.POST("/update", api.NewOutputAPI().UpdateInfo)
+		outputs.POST("/delete", api.NewOutputAPI().Delete)
 	}
 
 	utils := engine.Group("/api/v1/util")
 	{
 		utils.GET("/initdb", api.NewUtilAPI().InitDB)
-		utils.GET("/removefile", api.NewUtilAPI().RemoveFile)
 
 		utils.POST("/uploadfile", api.NewUtilAPI().UploadFile)
+		utils.POST("/removefile", api.NewUtilAPI().RemoveFile)
 	}
 
 	summary := engine.Group("/api/v1/summary")
@@ -156,11 +154,11 @@ func initRouter() *gin.Engine {
 	mailconf := engine.Group("/api/v1/mailconf")
 	{
 		mailconf.GET("/switch/get", api.NewMailConfAPI().GetSwitch)
-		mailconf.GET("/switch/set", api.NewMailConfAPI().SetSwitch)
+		mailconf.POST("/switch/set", api.NewMailConfAPI().SetSwitch)
 		mailconf.GET("/info", api.NewMailConfAPI().GetInfo)
-		mailconf.GET("/delete", api.NewMailConfAPI().Delete)
 
 		mailconf.POST("/save", api.NewMailConfAPI().Save)
+		mailconf.POST("/delete", api.NewMailConfAPI().Delete)
 	}
 
 	return engine

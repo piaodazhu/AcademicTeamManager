@@ -7,14 +7,14 @@ import (
 
 type Project struct {
 	Id          int64        `gorm:"primaryKey"`
-	Name        string       `gorm:"name"`
-	BeginTime   string       `gorm:"begin_time"`
-	OverTime    string       `gorm:"over_time"`
-	Remarks     string       `gorm:"remarks"`
-	Cid         int64        `gorm:"cid"`
-	Outputslist *Outputslist `gorm:"type:json"`
-	Status      int          `gorm:"status"`
-	Creator     int64        `gorm:"creator"`
+	Name        string       `gorm:"column:name"`
+	BeginTime   string       `gorm:"column:begin_time"`
+	OverTime    string       `gorm:"column:over_time"`
+	Remarks     string       `gorm:"column:remarks"`
+	Cid         int64        `gorm:"column:cid"`
+	Outputslist *Outputslist `gorm:"type:json,column:outputlist"`
+	Status      int          `gorm:"column:status"`
+	Creator     int64        `gorm:"column:creator"`
 }
 
 type ProjectCreateParam struct {
@@ -76,9 +76,9 @@ type ProjectExcelRecord struct {
 }
 
 type Outputs struct {
-	Id    int64   `json:"id"`
-	Name  string  `json:"name"`
-	Type  int     `json:"type"`
+	Id     int64   `json:"id"`
+	Name   string  `json:"name"`
+	Type   int     `json:"type"`
 	Weight float64 `json:"weight"`
 }
 

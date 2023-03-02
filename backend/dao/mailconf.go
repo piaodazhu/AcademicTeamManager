@@ -17,7 +17,6 @@ func NewMailconfDao() MailconfDao {
 	return MailconfDao{}
 }
 
-
 func (dao MailconfDao) IsExists(uid int64) bool {
 	var count int64
 	global.MysqlClient.Table(MAILCONFIG).Where("creator = ?", uid).Count(&count)
@@ -45,26 +44,25 @@ func (dao MailconfDao) UpdateStatus(uid int64, params *model.MailConfigStatusPar
 	return nil
 }
 
-
 func (dao MailconfDao) Delete(params *model.MailConfigDeleteParam) error {
 	return global.MysqlClient.Delete(&model.MailConfig{}, params.Id).Error
 }
 
-func (dao MailconfDao) Save(params *model.MailConfigSaveParam) error {
-	if !dao.IsExists(params.Creator) {
-		return create(params)
+func (dao MailconfDao) Save(uid int64, params *model.MailConfigSaveParam) error {
+	if !dao.IsExists(uid) {
+		return create(uid, params)
 	}
-	return update(params)
+	return update(uid, params)
 }
 
-func create(param *model.MailConfigSaveParam) error {
+func create(uid int64, param *model.MailConfigSaveParam) error {
 	mailConfig := model.MailConfig{
 		Stmp:     param.Stmp,
 		Port:     param.Port,
 		AuthCode: param.AuthCode,
 		Email:    param.Email,
 		Status:   Closed,
-		Creator:  param.Creator,
+		Creator:  uid,
 		Created:  time.Now().Unix(),
 	}
 	err := global.MysqlClient.Create(&mailConfig).Error
@@ -74,18 +72,16 @@ func create(param *model.MailConfigSaveParam) error {
 	return nil
 }
 
-func update(params *model.MailConfigSaveParam) error {
+func update(uid int64, params *model.MailConfigSaveParam) error {
 	mailConfig := model.MailConfig{
-		Id:       params.Id,
 		Stmp:     params.Stmp,
 		Port:     params.Port,
 		AuthCode: params.AuthCode,
 		Email:    params.Email,
-		Status:   params.Status,
-		Creator:  params.Creator,
+		Creator:  uid,
 		Updated:  time.Now().Unix(),
 	}
-	db := global.MysqlClient.Model(&mailConfig).Select("*").Omit("id", "creator", "created")
+	db := global.MysqlClient.Model(&mailConfig).Select("*").Omit("id", "status", "creator", "created").Where("creator = ?", uid)
 	if err := db.Updates(&mailConfig).Error; err != nil {
 		return err
 	}

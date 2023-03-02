@@ -2,29 +2,28 @@ package model
 
 type Student struct {
 	Id             int64  `gorm:"primaryKey"`
-	Name           string `gorm:"name"`
-	Phone          string `gorm:"phone"`
-	Email          string `gorm:"email"`
-	CreatorId      int64  `gorm:"creator"`
-	LastDiscussion int64  `gorm:"lastdis"`
-	NextDiscussion int64  `gorm:"nextdis"`
-	Status         int    `gorm:"status"`
-	Remark         string `gorm:"remark"`
+	Name           string `gorm:"column:name"`
+	Phone          string `gorm:"column:phone"`
+	Email          string `gorm:"column:email"`
+	CreatorId      int64  `gorm:"column:creator"`
+	LastDiscussion int64  `gorm:"column:lastdis"`
+	NextDiscussion int64  `gorm:"column:nextdis"`
+	Status         int    `gorm:"column:status"`
+	Remark         string `gorm:"column:remark"`
 }
 
-
 type StudentCreateParam struct {
-	Name           string `json:"name" binding:"required"`
-	Phone          string `json:"phone" binding:"omitempty,len=11"`
-	Email          string `json:"email" binding:"omitempty,email"`
-	Remark         string `json:"remark" binding:"-"`
+	Name   string `json:"name" binding:"required"`
+	Phone  string `json:"phone" binding:"omitempty,len=11"`
+	Email  string `json:"email" binding:"omitempty,email"`
+	Remark string `json:"remark" binding:"-"`
 }
 
 type StudentUpdateParam struct {
-	Id       int64  `json:"id" binding:"required"`
-	Name     string `json:"name" binding:"-"`
-	Phone    string `json:"phone" binding:"omitempty,len=11"`
-	Email    string `json:"email" binding:"omitempty,email"`
+	Id             int64  `json:"id" binding:"required"`
+	Name           string `json:"name" binding:"-"`
+	Phone          string `json:"phone" binding:"omitempty,len=11"`
+	Email          string `json:"email" binding:"omitempty,email"`
 	LastDiscussion int64  `json:"lastdis" binding:"omitempty"`
 	NextDiscussion int64  `json:"nextdis" binding:"omitempty"`
 	Remark         string `json:"remark" binding:"-"`
@@ -43,9 +42,9 @@ type StudentDeleteParam struct {
 }
 
 type StudentQueryParams struct {
-	Id     int64  `form:"id" binding:"omitempty, gt=0"`
-	Name   string `form:"name" binding:"omitempty, gt=0"`
-	Status int `form:"status" binding:"omitempty, oneof=1 2"`
+	Id     int64  `form:"id" binding:"omitempty,gt=0"`
+	Name   string `form:"name" binding:"omitempty,gt=0"`
+	Status int    `form:"status" binding:"omitempty,oneof=1 2"`
 	Page   Page
 }
 
@@ -71,8 +70,8 @@ type StudentExcelRecord struct {
 	Name           string `json:"name"`
 	Phone          string `json:"phone"`
 	Email          string `json:"email"`
-	LastDiscussion string  `json:"lastdis"`
-	NextDiscussion string  `json:"nextdis"`
-	Status         string    `json:"status"`
+	LastDiscussion string `json:"lastdis"`
+	NextDiscussion string `json:"nextdis"`
+	Status         string `json:"status"`
 	Remark         string `json:"remark"`
 }

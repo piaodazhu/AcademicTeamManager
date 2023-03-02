@@ -63,7 +63,7 @@ func (service MailconfService) Delete(params *model.MailConfigDeleteParam) int {
 }
 
 func (service MailconfService) Save(uid int64, params *model.MailConfigSaveParam) int {
-	if err := service.dao.Save(params); err != nil {
+	if err := service.dao.Save(uid, params); err != nil {
 		return response.ErrCodeFailed
 	}
 	return response.ErrCodeSuccess

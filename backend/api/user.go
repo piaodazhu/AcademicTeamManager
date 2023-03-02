@@ -31,9 +31,11 @@ func (api UserAPI) GetInfo(ctx *gin.Context) {
 
 func (api UserAPI) Delete(ctx *gin.Context) {
 	var params model.UserDeleteParams
+	fmt.Println(ctx.Params)
 	uid, err1 := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
 	err2 := ctx.ShouldBind(&params)
 	if err1 != nil || err2 != nil {
+		fmt.Println(err1, err2)
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return 
 	}
@@ -60,6 +62,7 @@ func (api UserAPI) Login(ctx *gin.Context) {
 	token, errCode := api.service.Login(&params)
 	if token == nil {
 		response.Result(errCode, nil, ctx)
+		return
 	}
 	response.Result(errCode, token, ctx)
 }

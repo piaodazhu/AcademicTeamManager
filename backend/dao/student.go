@@ -65,33 +65,33 @@ func (dao StudentDao) GetOption(uid int64) ([]*model.StudentOption, error) {
 
 func (dao StudentDao) IsExists(uid int64, name string) bool {
 	var count int64
-	global.MysqlClient.Table(STUDENT).Where("creator = ? and name = ?", name, uid).Count(&count)
+	global.MysqlClient.Table(STUDENT).Where("creator = ? and name = ?", uid, name).Count(&count)
 	return count == 1
 }
 
 func (dao StudentDao) Create(uid int64, params *model.StudentCreateParam) error {
 	student := model.Student{
-		Name: params.Name,
-		Phone: params.Phone,
-		Email: params.Email,
-		CreatorId: uid,
+		Name:           params.Name,
+		Phone:          params.Phone,
+		Email:          params.Email,
+		CreatorId:      uid,
 		LastDiscussion: 0,
 		NextDiscussion: 0,
-		Status: 0,
-		Remark: params.Remark,
+		Status:         0,
+		Remark:         params.Remark,
 	}
 	return global.MysqlClient.Create(&student).Error
 }
 
 func (dao StudentDao) Update(params *model.StudentUpdateParam) error {
 	student := model.Student{
-		Id: params.Id,
-		Name: params.Name,
-		Phone: params.Phone,
-		Email: params.Email,
+		Id:             params.Id,
+		Name:           params.Name,
+		Phone:          params.Phone,
+		Email:          params.Email,
 		LastDiscussion: params.LastDiscussion,
 		NextDiscussion: params.NextDiscussion,
-		Remark: params.Remark,
+		Remark:         params.Remark,
 	}
 	return global.MysqlClient.Model(&student).Select("*").Omit("id", "creator", "status").Updates(&student).Error
 }

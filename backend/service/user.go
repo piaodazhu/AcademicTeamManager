@@ -49,7 +49,7 @@ func (service UserService) GetVerifyCode(params *model.UserGetVerifyCodeParams) 
 		return response.ErrCodeFailed
 	}
 
-	content := fmt.Sprintf("验证码%v，您正在找回密码，切勿向他人泄露。", code)
+	content := fmt.Sprintf("验证码%v，切勿向他人泄露。", code)
 	err := common.SendVerifyCode(params.Email, content)
 	if err != nil {
 		return response.ErrCodeVerityCodeSendFailed
@@ -96,13 +96,11 @@ func (service UserService) Register(params *model.UserRegisterParams) int {
 		return response.ErrCodeVerityCodeInvalid
 	}
 
-
 	password, err := bcrypt.GenerateFromPassword([]byte(params.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return response.ErrCodeFailed
 	}
 	params.Password = string(password)
-
 
 	if err := service.dao.Create(params); err != nil {
 		return response.ErrCodeFailed

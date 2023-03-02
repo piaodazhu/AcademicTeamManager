@@ -14,6 +14,8 @@ func SendVerifyCode(email, content string) error {
 	smtp := global.Conf.MailConf.SmtpServer
 	secret := global.Conf.MailConf.AuthCode
 	sender := global.Conf.MailConf.Sender
+
+	fmt.Println("mail--", secret, sender, content, email)
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender) 
 	m.SetHeader("To", email)

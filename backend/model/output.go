@@ -2,12 +2,12 @@ package model
 
 type Output struct {
 	Id          int64   `gorm:"primaryKey"`
-	Name        string  `gorm:"name"`
-	Type        int     `gorm:"type"`
-	Weight      float64 `gorm:"weight"`
-	Status      int     `gorm:"status"`
-	Description string  `gorm:"description"`
-	CreatorId   int64   `gorm:"creator"`
+	Name        string  `gorm:"column:name"`
+	Type        int     `gorm:"column:type"`
+	Weight      float64 `gorm:"column:weight"`
+	Status      int     `gorm:"column:status"`
+	Description string  `gorm:"column:description"`
+	CreatorId   int64   `gorm:"column:creator"`
 }
 
 type OutputCreateParam struct {
@@ -37,7 +37,7 @@ type OutputQueryParam struct {
 	Id        int64   `form:"id" binding:"omitempty,gt=0"`
 	Ids       []int64 `form:"ids" json:"ids" binding:"-"`
 	Name      string  `form:"name" binding:"-"`
-	Type      int     `json:"type" binding:"omitempty,len=1"`
+	Type      int     `form:"type" binding:"omitempty,len=1"`
 	Status    int     `form:"status" binding:"omitempty,oneof=1 2"`
 	CreatorId int64   `form:"creator,omitempty" binding:"-"`
 	Page      Page

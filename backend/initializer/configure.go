@@ -2,6 +2,7 @@ package initializer
 
 import (
 	"atm/global"
+
 	"github.com/spf13/viper"
 )
 

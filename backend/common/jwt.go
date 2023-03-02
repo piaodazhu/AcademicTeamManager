@@ -16,10 +16,10 @@ func GenToken(uid int64) (string, error) {
 	signingKey := []byte(global.Conf.JwtConf.SigningKey)
 	expireTime := global.Conf.JwtConf.ExpireTime
 	claim := Claim{uid, jwt.RegisteredClaims{
-		Issuer: "atm",
+		Issuer:    "atm",
 		ExpiresAt: &jwt.NumericDate{Time: time.Now().Add(time.Duration(expireTime) * time.Second)},
 	}}
-	token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claim).SignedString(signingKey)
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claim).SignedString(signingKey)
 	return token, err
 }
 
