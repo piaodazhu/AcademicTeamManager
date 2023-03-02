@@ -56,7 +56,6 @@ func (dao UserDao) Create(params *model.UserRegisterParams) error {
 func (dao UserDao) GetUid(email string) (int64, error) {
 	var uid int64
 	err := global.MysqlClient.Table(USER).Where("email = ?", email).Select("id").Scan(&uid).Error
-	fmt.Println("!!! uid = ", uid)
 	return uid, err
 }
 
@@ -84,11 +83,9 @@ func (dao UserDao) ForgetPass(email, password string) error {
 }
 
 func (dao UserDao) SetCode(email string, code int) error {
-	fmt.Println("setcode: ", code)
 	return global.RedisClient.Set(ctx, fmt.Sprintf("VERIFYCODE:%s", email), strconv.Itoa(code), 10*time.Minute).Err()
 }
 
 func (dao UserDao) GetCode(email string) string {
-	fmt.Println("getcode: ", global.RedisClient.Get(ctx, fmt.Sprintf("VERIFYCODE:%s", email)).Val())
 	return global.RedisClient.Get(ctx, fmt.Sprintf("VERIFYCODE:%s", email)).Val()
 }

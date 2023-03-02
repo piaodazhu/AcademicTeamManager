@@ -4,7 +4,6 @@ import (
 	"atm/model"
 	"atm/response"
 	"atm/service"
-	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -70,7 +69,6 @@ func (api OutputAPI) CreateInfo(ctx *gin.Context) {
 
 	err2 := ctx.ShouldBind(&params)
 	if err1 != nil || err2 != nil {
-		fmt.Println(err2)
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return
 	}
