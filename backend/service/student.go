@@ -24,7 +24,7 @@ func NewStudentService() StudentService {
 }
 
 func (service StudentService) GetList(uid int64, params *model.StudentQueryParams) ([]*model.StudentList, int64, int) {
-	customerList, rows, err := service.dao.GetList(params)
+	customerList, rows, err := service.dao.GetList(uid, params)
 	if err != nil {
 		return nil, NumberNull, response.ErrCodeFailed
 	}
@@ -87,10 +87,10 @@ func (service StudentService) Export(uid int64) (string, int) {
 }
 
 func (service StudentService) Create(uid int64, params *model.StudentCreateParam) int {
-	if service.dao.IsExists(params.Name, uid) {
+	if service.dao.IsExists(uid, params.Name) {
 		return response.ErrCodeCustomerHasExist
 	}
-	if err := service.dao.Create(params); err != nil {
+	if err := service.dao.Create(uid, params); err != nil {
 		return response.ErrCodeFailed
 	}
 	return response.ErrCodeSuccess

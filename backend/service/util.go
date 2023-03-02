@@ -23,7 +23,7 @@ func (service UtilService) InitDatabase() int {
 }
 
 
-func (service UtilService) FileUpload(file *multipart.FileHeader) (*model.FileParam, int) {
+func (service UtilService) FileUpload(file *multipart.FileHeader) (*model.FileInfo, int) {
 	fileInfo, err := service.dao.FileUpload(file)
 	if err != nil {
 		return nil, response.ErrCodeFileUploadFailed

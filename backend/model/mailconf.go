@@ -19,13 +19,12 @@ type MailConfigSaveParam struct {
 	AuthCode string `json:"authCode" binding:"required,gt=0"`
 	Email    string `json:"email" binding:"required,email"`
 	Status   int    `json:"status" binding:"omitempty,oneof=1 2"`
-	Creator  int64  `json:"creator" binding:"omitempty"`
+	Creator  int64  `json:"creator" binding:"required"`
 }
 
 type MailConfigStatusParam struct {
-	Id      int64 `json:"id" binding:"omitempty,gt=0"`
 	Status  int   `json:"status" binding:"required,oneof=1 2"`
-	Creator int64 `json:"creator" binding:"omitempty"`
+	Creator int64 `json:"creator" binding:"required"`
 }
 
 type MailConfigDeleteParam struct {

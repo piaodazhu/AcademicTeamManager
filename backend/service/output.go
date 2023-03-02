@@ -6,7 +6,6 @@ import (
 	"atm/model"
 	"atm/response"
 	"strconv"
-	"time"
 )
 
 type OutputService struct {
@@ -18,8 +17,7 @@ func NewOutputService() OutputService {
 }
 
 func (service OutputService) GetList(uid int64, params *model.OutputQueryParam) ([]*model.OutputList, int64, int) {
-	params.CreatorId = uid
-	outputList, rows, err := service.dao.GetList(params)
+	outputList, rows, err := service.dao.GetList(uid, params)
 	if err != nil {
 		return nil, NumberNull, response.ErrCodeFailed
 	}
@@ -45,7 +43,7 @@ func (service OutputService) Create(uid int64, params *model.OutputCreateParam) 
 	if service.dao.IsExists(uid, params.Name) {
 		return response.ErrCodeProductHasExist
 	}
-	if err := service.dao.Create(param); err != nil {
+	if err := service.dao.Create(uid, params); err != nil {
 		return response.ErrCodeFailed
 	}
 	return response.ErrCodeSuccess

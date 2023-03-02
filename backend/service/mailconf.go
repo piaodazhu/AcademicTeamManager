@@ -30,8 +30,7 @@ func (service MailconfService) UpdateStatus(uid int64, params *model.MailConfigS
 	if !service.dao.IsExists(uid) {
 		return response.ErrCodeMailConfigUnSet
 	}
-	params.Creator = uid
-	if err := service.dao.UpdateStatus(params); err != nil {
+	if err := service.dao.UpdateStatus(uid, params); err != nil {
 		return response.ErrCodeFailed
 	}
 	return response.ErrCodeSuccess

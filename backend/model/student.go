@@ -45,7 +45,7 @@ type StudentDeleteParam struct {
 type StudentQueryParams struct {
 	Id     int64  `form:"id" binding:"omitempty, gt=0"`
 	Name   string `form:"name" binding:"omitempty, gt=0"`
-	Status string `form:"status" binding:"omitempty, oneof=1 2"`
+	Status int `form:"status" binding:"omitempty, oneof=1 2"`
 	Page   Page
 }
 
