@@ -18,7 +18,7 @@ func NewMailConfAPI() MailConfAPI {
 	return MailConfAPI{service.NewMailconfService()}
 }
 
-func (api MailConfAPI) GetSwitch(ctx *gin.Context) {
+func (api MailConfAPI) CheckValidity(ctx *gin.Context) {
 	uid, err := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
 	if err != nil {
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
@@ -27,6 +27,16 @@ func (api MailConfAPI) GetSwitch(ctx *gin.Context) {
 	errCode := api.service.Check(uid)
 	response.Result(errCode, nil, ctx)
 }
+
+// func (api MailConfAPI) GetSwitch(ctx *gin.Context) {
+// 	uid, err := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
+// 	if err != nil {
+// 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
+// 		return
+// 	}
+// 	errCode := api.service.Check(uid)
+// 	response.Result(errCode, nil, ctx)
+// }
 
 func (api MailConfAPI) SetSwitch(ctx *gin.Context) {
 	var params model.MailConfigStatusParam

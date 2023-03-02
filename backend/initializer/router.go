@@ -153,9 +153,10 @@ func initRouter() *gin.Engine {
 
 	mailconf := engine.Group("/api/v1/mailconf")
 	{
-		mailconf.GET("/switch/get", api.NewMailConfAPI().GetSwitch)
+		// mailconf.GET("/switch/get", api.NewMailConfAPI().GetSwitch)
 		mailconf.POST("/switch/set", api.NewMailConfAPI().SetSwitch)
 		mailconf.GET("/info", api.NewMailConfAPI().GetInfo)
+		mailconf.GET("/check", api.NewMailConfAPI().CheckValidity)
 
 		mailconf.POST("/save", api.NewMailConfAPI().Save)
 		mailconf.POST("/delete", api.NewMailConfAPI().Delete)

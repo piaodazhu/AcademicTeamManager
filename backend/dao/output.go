@@ -15,7 +15,7 @@ func NewOutputDao() OutputDao {
 
 func (dao OutputDao) IsExists(uid int64, name string) bool {
 	var count int64
-	global.MysqlClient.Table(OUTPUT).Where("creator = ? and name = ?").Count(&count)
+	global.MysqlClient.Table(OUTPUT).Where("creator = ? and name = ?", uid, name).Count(&count)
 	return count == 1
 }
 

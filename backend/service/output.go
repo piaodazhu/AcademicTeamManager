@@ -41,7 +41,7 @@ func (service OutputService) Delete(params *model.OutputDeleteParam) int {
 
 func (service OutputService) Create(uid int64, params *model.OutputCreateParam) int {
 	if service.dao.IsExists(uid, params.Name) {
-		return response.ErrCodeProductHasExist
+		return response.ErrCodeOutputHasExist
 	}
 	if err := service.dao.Create(uid, params); err != nil {
 		return response.ErrCodeFailed

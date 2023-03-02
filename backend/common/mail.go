@@ -17,11 +17,11 @@ func SendVerifyCode(email, content string) error {
 
 	fmt.Println("mail--", secret, sender, content, email)
 	m := gomail.NewMessage()
-	m.SetHeader("From", sender) 
+	m.SetHeader("From", sender)
 	m.SetHeader("To", email)
 	m.SetHeader("Cc", email)
-	m.SetHeader("Bcc", email) 
-	m.SetHeader("Subject", "AcademicTeamManager VerifyCode") 
+	m.SetHeader("Bcc", email)
+	m.SetHeader("Subject", "AcademicTeamManager VerifyCode")
 	m.SetBody("text/html", content)
 	d := gomail.NewDialer(smtp, 465, sender, secret)
 
@@ -32,7 +32,6 @@ func SendVerifyCode(email, content string) error {
 	}
 	return nil
 }
-
 
 func SendMail(mp model.MailParam) error {
 	m := gomail.NewMessage()
@@ -46,12 +45,11 @@ func SendMail(mp model.MailParam) error {
 	d := gomail.NewDialer(mp.Smtp, mp.Port, mp.Sender, mp.AuthCode)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := d.DialAndSend(m); err != nil {
-		log.Printf("send mail to customer error : %s", err)
+		log.Printf("send mail to student error : %s", err)
 		return err
 	}
 	return nil
 }
-
 
 func DialMail(smtp string, port int, sender, authCode string) error {
 	d := gomail.NewDialer(smtp, port, sender, authCode)

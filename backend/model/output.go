@@ -12,7 +12,7 @@ type Output struct {
 
 type OutputCreateParam struct {
 	Name        string  `json:"name" binding:"required"`
-	Type        int     `json:"type" binding:"required,len=1"`
+	Type        int     `json:"type" binding:"required,oneof=1 2 3 4"`
 	Weight      float64 `json:"weight" binding:"required,gt=0"`
 	Description string  `json:"description" binding:"-"`
 	Status      int     `json:"status" binding:"required,oneof=1 2"`
@@ -22,7 +22,7 @@ type OutputCreateParam struct {
 type OutputUpdateParam struct {
 	Id          int64   `json:"id" binding:"required,gt=0"`
 	Name        string  `json:"name" binding:"required"`
-	Type        int     `json:"type" binding:"required,len=1"`
+	Type        int     `json:"type" binding:"required,oneof=1 2 3 4"`
 	Weight      float64 `json:"weight" binding:"required,gt=0"`
 	Description string  `json:"description" binding:"-"`
 	Status      int     `json:"status" binding:"required,oneof=1 2"`
@@ -37,7 +37,7 @@ type OutputQueryParam struct {
 	Id        int64   `form:"id" binding:"omitempty,gt=0"`
 	Ids       []int64 `form:"ids" json:"ids" binding:"-"`
 	Name      string  `form:"name" binding:"-"`
-	Type      int     `form:"type" binding:"omitempty,len=1"`
+	Type      int     `form:"type" binding:"omitempty,oneof=1 2 3 4"`
 	Status    int     `form:"status" binding:"omitempty,oneof=1 2"`
 	CreatorId int64   `form:"creator,omitempty" binding:"-"`
 	Page      Page

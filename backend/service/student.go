@@ -1,9 +1,9 @@
 package service
 
 import (
+	"atm/common"
 	"atm/dao"
 	"atm/model"
-	"atm/common"
 	"atm/response"
 	"strconv"
 	"time"
@@ -24,11 +24,11 @@ func NewStudentService() StudentService {
 }
 
 func (service StudentService) GetList(uid int64, params *model.StudentQueryParams) ([]*model.StudentList, int64, int) {
-	customerList, rows, err := service.dao.GetList(uid, params)
+	studentList, rows, err := service.dao.GetList(uid, params)
 	if err != nil {
 		return nil, NumberNull, response.ErrCodeFailed
 	}
-	return customerList, rows, response.ErrCodeSuccess
+	return studentList, rows, response.ErrCodeSuccess
 }
 
 func (service StudentService) GetOption(uid int64) ([]*model.StudentOption, int) {
@@ -40,11 +40,11 @@ func (service StudentService) GetOption(uid int64) ([]*model.StudentOption, int)
 }
 
 func (service StudentService) GetInfo(params *model.StudentQueryParams) (*model.StudentInfo, int) {
-	customerInfo, err := service.dao.GetInfo(params)
+	studentInfo, err := service.dao.GetInfo(params)
 	if err != nil {
 		return nil, response.ErrCodeFailed
 	}
-	return customerInfo, response.ErrCodeSuccess
+	return studentInfo, response.ErrCodeSuccess
 }
 
 func (service StudentService) Delete(params *model.StudentDeleteParam) int {
@@ -55,13 +55,13 @@ func (service StudentService) Delete(params *model.StudentDeleteParam) int {
 }
 
 func (service StudentService) Export(uid int64) (string, int) {
-	customers, err := service.dao.GetListByUid(uid)
+	students, err := service.dao.GetListByUid(uid)
 	if err != nil {
 		return StringNull, response.ErrCodeFailed
 	}
 	excelRows := make([]model.StudentExcelRecord, 0)
 	var row model.StudentExcelRecord
-	for _, c := range customers {
+	for _, c := range students {
 		row.Name = c.Name
 		row.Phone = c.Phone
 		row.Email = c.Email
@@ -88,7 +88,7 @@ func (service StudentService) Export(uid int64) (string, int) {
 
 func (service StudentService) Create(uid int64, params *model.StudentCreateParam) int {
 	if service.dao.IsExists(uid, params.Name) {
-		return response.ErrCodeCustomerHasExist
+		return response.ErrCodeStudentHasExist
 	}
 	if err := service.dao.Create(uid, params); err != nil {
 		return response.ErrCodeFailed

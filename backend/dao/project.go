@@ -12,14 +12,31 @@ func NewProjectDao() ProjectDao {
 	return ProjectDao{}
 }
 
+func (dao ProjectDao) IsExists(uid int64, cid int64) bool {
+	var count int64
+	global.MysqlClient.Table(PROJECT).Where("creator = ? and cid = ?", uid, cid).Count(&count)
+	return count == 1
+}
+
+
 func (dao ProjectDao) GetInfo(params *model.ProjectQueryParam) (*model.ProjectInfo, error) {
 	where := model.Project{
 		Id: params.Id,
 	}
-	projectInfo := model.ProjectInfo{}
-	err := global.MysqlClient.Table(PROJECT).Where(where).First(&projectInfo).Error
+	project := model.Project{}
+	err := global.MysqlClient.Table(PROJECT).Where(where).First(&project).Error
 	if err != nil {
 		return nil, err 
+	}
+	projectInfo := model.ProjectInfo {
+		Id: project.Id,
+		Name: project.Name,
+		Cid: project.Cid,
+		BeginTime: project.BeginTime,
+		OverTime: project.OverTime,
+		Status: project.Status,
+		Remark: project.Remark,
+		Outputslist: project.Outputslist,
 	}
 	return &projectInfo, nil
 }
@@ -54,7 +71,7 @@ func (dao ProjectDao) Create(uid int64, params *model.ProjectCreateParam) error 
 		Name: params.Name,
 		BeginTime: params.BeginTime,
 		OverTime: params.OverTime,
-		Remarks: params.Remarks,
+		Remark: params.Remark,
 		Outputslist: params.Outputslist,
 		Creator: uid,
 	}
@@ -68,10 +85,10 @@ func (dao ProjectDao) Update(params *model.ProjectUpdateParam) error {
 		Name: params.Name,
 		BeginTime: params.BeginTime,
 		OverTime: params.OverTime,
-		Remarks: params.Remarks,
+		Remark: params.Remark,
 		Outputslist: params.Outputslist,
 	}
-	return global.MysqlClient.Model(&project).Select("*").Omit("id", "creator","cid").Updates(&project).Error
+	return global.MysqlClient.Model(&project).Select("*").Omit("id", "creator").Updates(&project).Error
 }
 
 func (dao ProjectDao) Delete(params *model.ProjectDeleteParam) error {

@@ -10,9 +10,9 @@ type Project struct {
 	Name        string       `gorm:"column:name"`
 	BeginTime   string       `gorm:"column:begin_time"`
 	OverTime    string       `gorm:"column:over_time"`
-	Remarks     string       `gorm:"column:remarks"`
+	Remark      string       `gorm:"column:remark"`
 	Cid         int64        `gorm:"column:cid"`
-	Outputslist *Outputslist `gorm:"type:json,column:outputlist"`
+	Outputslist *Outputslist `gorm:"column:outputlist;type:json"`
 	Status      int          `gorm:"column:status"`
 	Creator     int64        `gorm:"column:creator"`
 }
@@ -21,19 +21,19 @@ type ProjectCreateParam struct {
 	Name        string       `json:"name" binding:"required"`
 	BeginTime   string       `json:"beginTime" binding:"-"`
 	OverTime    string       `json:"overTime" binding:"-"`
-	Remarks     string       `json:"remarks" binding:"-"`
+	Remark      string       `json:"remark" binding:"-"`
 	Cid         int64        `json:"cid" binding:"required,gt=0"`
-	Outputslist *Outputslist `json:"productlist"`
+	Outputslist *Outputslist `json:"outputlist"`
 }
 
 type ProjectUpdateParam struct {
 	Id          int64        `json:"id" binding:"required,gt=0"`
-	Name        string       `json:"name" binding:"required"`
+	Name        string       `json:"name" binding:"-"`
 	BeginTime   string       `json:"beginTime" binding:"-"`
 	OverTime    string       `json:"overTime" binding:"-"`
-	Remarks     string       `json:"remarks" binding:"-"`
-	Cid         int64        `json:"cid" binding:"required,gt=0"`
-	Outputslist *Outputslist `json:"productlist"`
+	Remark      string       `json:"remark" binding:"-"`
+	Cid         int64        `json:"cid" binding:"omitempty,gt=0"`
+	Outputslist *Outputslist `json:"outputlist"`
 }
 
 type ProjectDeleteParam struct {
@@ -52,7 +52,7 @@ type ProjectList struct {
 	Name      string `json:"name"`
 	BeginTime string `json:"beginTime"`
 	OverTime  string `json:"overTime"`
-	Remarks   string `json:"remarks"`
+	Remark    string `json:"remark"`
 	Status    int    `json:"status"`
 }
 
@@ -62,8 +62,8 @@ type ProjectInfo struct {
 	Cid         int64        `json:"cid"`
 	BeginTime   string       `json:"beginTime"`
 	OverTime    string       `json:"overTime"`
-	Remarks     string       `json:"remarks"`
-	Outputslist *Outputslist `json:"productlist"`
+	Remark      string       `json:"remark"`
+	Outputslist *Outputslist `json:"outputlist"`
 	Status      int          `json:"status"`
 }
 
@@ -72,7 +72,7 @@ type ProjectExcelRecord struct {
 	BeginTime string `json:"beginTime"`
 	OverTime  string `json:"overTime"`
 	Status    string `json:"status"`
-	Remarks   string `json:"remarks"`
+	Remark    string `json:"remark"`
 }
 
 type Outputs struct {

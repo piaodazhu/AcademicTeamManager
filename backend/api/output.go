@@ -4,6 +4,7 @@ import (
 	"atm/model"
 	"atm/response"
 	"atm/service"
+	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -25,8 +26,8 @@ func (api OutputAPI) GetList(ctx *gin.Context) {
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return
 	}
-	productList, rows, errCode := api.service.GetList(uid, &params)
-	response.PageResult(errCode, productList, rows, ctx)
+	outputList, rows, errCode := api.service.GetList(uid, &params)
+	response.PageResult(errCode, outputList, rows, ctx)
 }
 
 func (api OutputAPI) GetInfo(ctx *gin.Context) {
@@ -35,8 +36,8 @@ func (api OutputAPI) GetInfo(ctx *gin.Context) {
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return
 	}
-	productInfo, errCode := api.service.GetInfo(&params)
-	response.Result(errCode, productInfo, ctx)
+	outputInfo, errCode := api.service.GetInfo(&params)
+	response.Result(errCode, outputInfo, ctx)
 }
 
 func (api OutputAPI) Delete(ctx *gin.Context) {
@@ -66,8 +67,10 @@ func (api OutputAPI) ExportList(ctx *gin.Context) {
 func (api OutputAPI) CreateInfo(ctx *gin.Context) {
 	var params model.OutputCreateParam
 	uid, err1 := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
+
 	err2 := ctx.ShouldBind(&params)
 	if err1 != nil || err2 != nil {
+		fmt.Println(err2)
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return
 	}

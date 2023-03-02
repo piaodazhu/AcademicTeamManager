@@ -41,6 +41,9 @@ func (service ProjectService) Delete(params *model.ProjectDeleteParam) int {
 }
 
 func (service ProjectService) Create(uid int64, params *model.ProjectCreateParam) int {
+	if service.dao.IsExists(uid, params.Cid) {
+		return response.ErrCodeFailed
+	}
 	if err := service.dao.Create(uid, params); err != nil {
 		return response.ErrCodeFailed
 	}
@@ -65,17 +68,18 @@ func (service ProjectService) Export(uid int64) (string, int) {
 		row.Name = c.Name
 		row.BeginTime = c.BeginTime
 		row.OverTime = c.OverTime
-		row.Remarks = c.Remarks
 		if c.Status == 1 {
 			row.Status = "已完成"
-		}
-		if c.Status == 2 {
+		} else if c.Status == 2 {
 			row.Status = "未完成"
+		} else {
+			row.Status = "初始化"
 		}
+		row.Remark = c.Remark
 		excelRows = append(excelRows, row)
 	}
 	sheet := "项目信息"
-	columns := []string{"项目名称", "开始时间", "截止时间", "备注", "状态"}
+	columns := []string{"项目名称", "开始时间", "截止时间", "状态", "备注"}
 	fileName := "project_" + strconv.FormatInt(uid, 10)
 	file, err := common.GenExcelFile(sheet, columns, excelRows, fileName)
 	if err != nil {
