@@ -3,6 +3,7 @@ package dao
 import (
 	"atm/global"
 	"atm/model"
+	"fmt"
 )
 
 type StudentDao struct {
@@ -18,6 +19,7 @@ func (dao StudentDao) GetInfo(params *model.StudentQueryParams) (*model.StudentI
 	}
 	studentInfo := model.StudentInfo{}
 	err := global.MysqlClient.Table(STUDENT).Where(&where).First(&studentInfo).Error
+	fmt.Println(studentInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -28,6 +30,7 @@ func (dao StudentDao) GetList(uid int64, params *model.StudentQueryParams) ([]*m
 	where := model.Student{
 		Id:        params.Id,
 		Name:      params.Name,
+		Type:      params.Type,
 		Status:    params.Status,
 		CreatorId: uid,
 	}
@@ -72,12 +75,13 @@ func (dao StudentDao) IsExists(uid int64, name string) bool {
 func (dao StudentDao) Create(uid int64, params *model.StudentCreateParam) error {
 	student := model.Student{
 		Name:           params.Name,
+		Type:           params.Type,
 		Phone:          params.Phone,
 		Email:          params.Email,
 		CreatorId:      uid,
-		LastDiscussion: 0,
-		NextDiscussion: 0,
-		Status:         0,
+		LastDiscussion: params.Lastdis,
+		NextDiscussion: params.Nextdis,
+		Status:         params.Status,
 		Remark:         params.Remark,
 	}
 	return global.MysqlClient.Create(&student).Error
@@ -87,13 +91,16 @@ func (dao StudentDao) Update(params *model.StudentUpdateParam) error {
 	student := model.Student{
 		Id:             params.Id,
 		Name:           params.Name,
+		Type:           params.Type,
 		Phone:          params.Phone,
 		Email:          params.Email,
-		LastDiscussion: params.LastDiscussion,
-		NextDiscussion: params.NextDiscussion,
+		LastDiscussion: params.Lastdis,
+		NextDiscussion: params.Nextdis,
+		Status:         params.Status,
 		Remark:         params.Remark,
 	}
-	return global.MysqlClient.Model(&student).Select("*").Omit("id", "creator", "status").Updates(&student).Error
+	fmt.Println(student)
+	return global.MysqlClient.Model(&student).Select("*").Omit("id", "creator").Updates(&student).Error
 }
 
 func (dao StudentDao) Delete(params *model.StudentDeleteParam) error {

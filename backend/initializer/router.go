@@ -148,7 +148,7 @@ func initRouter() *gin.Engine {
 
 	summary := engine.Group("/api/v1/summary")
 	{
-		summary.GET("/", api.NewSummaryAPI().Get)
+		summary.GET("", api.NewSummaryAPI().Get)
 	}
 
 	mailconf := engine.Group("/api/v1/mailconf")

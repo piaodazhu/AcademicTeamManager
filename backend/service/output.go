@@ -65,19 +65,22 @@ func (service OutputService) Export(uid int64) (string, int) {
 	var row model.OutputExcelRecord
 	for _, p := range outputs {
 		row.Name = p.Name
-		if p.Status == 1 {
-			row.Status = "推进中"
-		} else if p.Status == 2 {
-			row.Status = "已完成"
-		}
-		if p.Type == 1 {
+		switch p.Type {
+		case 1:
 			row.Type = "期刊论文"
-		} else if p.Type == 2 {
+		case 2:
 			row.Type = "会议论文"
-		} else if p.Type == 3 {
+		case 3:
 			row.Type = "学术专著"
-		} else if p.Type == 4 {
+		case 4:
 			row.Type = "发明专利"
+		}
+
+		switch p.Status {
+		case 1:
+			row.Status = "推进中"
+		case 2:
+			row.Status = "已完成"
 		}
 		row.Weight = p.Weight
 		row.Description = p.Description

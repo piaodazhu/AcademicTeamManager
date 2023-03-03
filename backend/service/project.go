@@ -68,11 +68,12 @@ func (service ProjectService) Export(uid int64) (string, int) {
 		row.Name = c.Name
 		row.BeginTime = c.BeginTime
 		row.OverTime = c.OverTime
-		if c.Status == 1 {
-			row.Status = "已完成"
-		} else if c.Status == 2 {
-			row.Status = "未完成"
-		} else {
+		switch c.Status {
+		case 1:
+			row.Status = "已研讨"
+		case 2:
+			row.Status = "待研讨"
+		default:
 			row.Status = "初始化"
 		}
 		row.Remark = c.Remark

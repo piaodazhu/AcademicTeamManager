@@ -6,7 +6,6 @@ import (
 	"atm/model"
 	"atm/response"
 	"strconv"
-	"time"
 )
 
 const (
@@ -65,19 +64,30 @@ func (service StudentService) Export(uid int64) (string, int) {
 		row.Name = c.Name
 		row.Phone = c.Phone
 		row.Email = c.Email
-		row.LastDiscussion = time.Unix(c.LastDiscussion, 0).Format("2006-01-02")
-		row.NextDiscussion = time.Unix(c.NextDiscussion, 0).Format("2006-01-02")
+		row.LastDiscussion = c.Lastdis
+		row.NextDiscussion = c.Nextdis
 		row.Remark = c.Remark
-		if c.Status == 1 {
-			row.Status = "暂无安排"
+		switch c.Type {
+		case 0:
+			row.Type = "未知"
+		case 1:
+			row.Type = "博士"
+		case 2:
+			row.Type = "硕士"
+		case 3:
+			row.Type = "本科"
 		}
-		if c.Status == 2 {
-			row.Status = "计划讨论"
+
+		switch c.Status {
+		case 1:
+			row.Status = "已研讨"
+		case 2:
+			row.Status = "待研讨"
 		}
 		excelRows = append(excelRows, row)
 	}
 	sheet := "学生信息"
-	columns := []string{"姓名", "手机号", "邮箱", "上次讨论时间", "下次讨论时间", "状态", "备注"}
+	columns := []string{"姓名", "学位", "手机号", "邮箱", "上次讨论时间", "下次讨论时间", "状态", "备注"}
 	fileName := "student_" + strconv.FormatInt(uid, 10)
 	file, err := common.GenExcelFile(sheet, columns, excelRows, fileName)
 	if err != nil {
