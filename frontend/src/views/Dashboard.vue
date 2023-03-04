@@ -33,7 +33,7 @@
             </a-col>
             <a-col :span="8">
                 <a-card class="card">
-                    <a-statistic :value="data.projectAmount" style="margin-right: 50px">
+                    <a-statistic :value="data.outputs" style="margin-right: 50px">
                         <template #title>
                             <span>产出数量</span>
                             <a-tooltip placement="right">

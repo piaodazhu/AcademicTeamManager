@@ -44,7 +44,7 @@ import { initDatabase } from '../api/common';
 
 // 初始化数据库（只会在生产环境中初始化）
 onMounted(() => {
-    if (formData.email == '2283079466@qq.com') {
+    if (formData.email == 'admin@demo.com') {
         message.loading('正在初始化数据...', 2.5).then(() => {
             initDatabase().then((res) => {
                 if (res.data.code == 0) {
@@ -61,7 +61,7 @@ onMounted(() => {
 const router = useRouter()
 
 const formData = reactive({
-    email: '2283079466@qq.com',
+    email: 'admin@demo.com',
     password: '123123',
     remember: true,
 })

@@ -156,7 +156,10 @@
                             <Spot v-if="text == 2" type="warning" title="推进中" />
                         </template>
                         <template v-if="column.dataIndex === 'type'">
-                            <span v-if="text == 1">默认</span>
+                            <span v-if="text == 1">期刊论文</span>
+                            <span v-if="text == 2">会议论文</span>
+                            <span v-if="text == 3">学术专著</span>
+                            <span v-if="text == 4">发明专利</span>
                         </template>
                         <template v-if="column.dataIndex === 'weight'">
                             <span style="color: #ff991f">{{ text }}</span>
@@ -298,7 +301,7 @@ const outputColumns = [{
 const outputListColumns = [{
     title: '成果名称',
     dataIndex: 'name',
-    width: 100,
+    width: 240,
     fixed: 'left',
     ellipsis: true,
 }, {
@@ -308,7 +311,7 @@ const outputListColumns = [{
 }, {
     title: '成果权重',
     dataIndex: 'weight',
-    width: 60,
+    width: 100,
 }, {
     title: '完成状态',
     dataIndex: 'status',
@@ -316,7 +319,7 @@ const outputListColumns = [{
 }, {
     title: '成果描述',
     dataIndex: 'description',
-    width: 240,
+    width: 400,
     ellipsis: true,
 }];
 

@@ -8,7 +8,7 @@ import (
 
 func loadConf() {
 	viper.AddConfigPath("./")
-	viper.SetConfigName("_config")
+	viper.SetConfigName("config")
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {
 		panic("[ERROR] invalid configure file.")

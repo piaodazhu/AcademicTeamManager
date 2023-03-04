@@ -5,13 +5,13 @@ server:
 mysql:
   host: 127.0.0.1
   port: 3306
-  username: parallels
-  password: mysqlmima
+  username: yourname
+  password: yourpassword
   database: atm
   maxIdleConns: 10
   maxOpenConns: 100
   connMaxLifetime: 3600
-  initSQL: /x/x/x/y
+  initSQL: /atm/subfolder/init.sql
 
 redis:
   host: 127.0.0.1
@@ -24,7 +24,7 @@ jwt:
   expireTime: 604800
 
 upload:
-  path: /x/x/x/
+  path: /atm/subfolder/
 
 mail:
   smtp: smtp.qq.com
