@@ -18,5 +18,6 @@ func (service SummaryService) Summary(uid int64) *model.Summary {
 	ms.StudentPan = service.dao.AnalyzeStudent(uid)
 	ms.ProjectPan = service.dao.AnalyzeProject(uid)
 	ms.OutputPan = service.dao.AnalyzeOutput(uid)
+	ms.ProgressBar = service.dao.AnalyzeProgress(uid)
 	return ms
 }

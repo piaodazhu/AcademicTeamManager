@@ -40,7 +40,7 @@ func (dao ProjectDao) GetInfo(params *model.ProjectQueryParam) (*model.ProjectIn
 		// Cid: project.Cid,
 		BeginTime: project.BeginTime,
 		OverTime: project.OverTime,
-		Status: project.Status,
+		Finishrate: project.Finishrate,
 		Remark: project.Remark,
 		Outputslist: project.Outputslist,
 	}
@@ -51,12 +51,26 @@ func (dao ProjectDao) GetList(uid int64, params *model.ProjectQueryParam) ([]*mo
 	where := model.Project{
 		Id: params.Id,
 		Name: params.Name,
-		Status: params.Status,
 		Creator: uid,
 	}
 	projectList := []*model.ProjectList{}
-	rows, err := restPage(params.Page, PROJECT, &where, &projectList)
-	return projectList, rows, err
+	// rows, err := restPage(params.Page, PROJECT, &where, &projectList)
+
+	var sortOpt string
+	switch params.Sorttype {
+	case 0:
+	case 1: sortOpt = "id ASC"
+	case 2: sortOpt = "finishrate DESC"
+	case 3: sortOpt = "finishrate ASC"
+	}
+	if params.Page.PageNum > 0 && params.Page.PageSize > 0 {
+		offset := (params.Page.PageNum - 1) * params.Page.PageSize
+		global.MysqlClient.Table(PROJECT).Where(&where).Order(sortOpt).Offset(offset).Limit(params.Page.PageSize).Find(&projectList)
+	}
+	var rows int64
+	res := global.MysqlClient.Table(PROJECT).Where(where).Count(&rows)
+
+	return projectList, rows, res.Error
 }
 
 func (dao ProjectDao) GetListByUid(uid int64) ([]*model.ProjectList, error) {
@@ -88,6 +102,7 @@ func (dao ProjectDao) Create(uid int64, params *model.ProjectCreateParam) error 
 		BeginTime: params.BeginTime,
 		OverTime: params.OverTime,
 		Remark: params.Remark,
+		Finishrate: params.Finishrate,
 		Outputslist: params.Outputslist,
 		Creator: uid,
 	}
@@ -102,6 +117,7 @@ func (dao ProjectDao) Update(params *model.ProjectUpdateParam) error {
 		BeginTime: params.BeginTime,
 		OverTime: params.OverTime,
 		Remark: params.Remark,
+		Finishrate: params.Finishrate,
 		Outputslist: params.Outputslist,
 	}
 	return global.MysqlClient.Debug().Model(&project).Select("*").Omit("id", "creator").Updates(&project).Error

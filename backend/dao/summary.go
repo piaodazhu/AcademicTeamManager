@@ -91,3 +91,9 @@ func (dao SummaryDao) AnalyzeOutput(uid int64) []*model.PanArg {
 	}
 	return ret
 }
+
+func (dao SummaryDao) AnalyzeProgress(uid int64) []*model.BarArg {
+	ret := []*model.BarArg{}
+	global.MysqlClient.Raw("select name, finishrate from project where creator = ?", uid).Scan(&ret)
+	return ret
+}

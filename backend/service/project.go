@@ -110,19 +110,12 @@ func (service ProjectService) Export(uid int64) (string, int) {
 		row.Name = c.Name
 		row.BeginTime = c.BeginTime
 		row.OverTime = c.OverTime
-		switch c.Status {
-		case 1:
-			row.Status = "已研讨"
-		case 2:
-			row.Status = "待研讨"
-		default:
-			row.Status = "初始化"
-		}
+		row.Finishrate = c.Finishrate
 		row.Remark = c.Remark
 		excelRows = append(excelRows, row)
 	}
 	sheet := "项目信息"
-	columns := []string{"项目名称", "开始时间", "截止时间", "状态", "备注"}
+	columns := []string{"项目名称", "开始时间", "截止时间", "完成度", "状态", "备注"}
 	fileName := "project_" + strconv.FormatInt(uid, 10)
 	file, err := common.GenExcelFile(sheet, columns, excelRows, fileName)
 	if err != nil {
@@ -130,46 +123,3 @@ func (service ProjectService) Export(uid int64) (string, int) {
 	}
 	return file, response.ErrCodeSuccess
 }
-
-// func (service ProjectService) GetOutputList(params *model.ProjectOutputQueryParam) ([]*model.Outputs, int) {
-// 	if params.Id == 0 {
-// 		outputs, err := service.output.GetListByIds(params.Oids)
-// 		if err != nil {
-// 			return nil, response.ErrCodeFailed
-// 		}
-// 		return outputs, response.ErrCodeSuccess
-// 	}
-
-// 	before, err := service.dao.GetProjectById(params.Id)
-// 	if err != nil {
-// 		return nil, response.ErrCodeFailed
-// 	}
-
-// 	// 最终已添加的产品列表
-// 	newOutputList := make([]*model.Outputs, 0)
-
-// 	if len(params.Oids) == 0 {
-// 		return newOutputList, response.ErrCodeSuccess
-// 	}
-
-// 	addedPids := make([]int64, 0)
-// 	for _, pid := range params.Oids {
-// 		if len(*project.Outputlist) == 0 {
-// 			addedPids = params.Pids
-// 			break
-// 		}
-// 		for _, Output := range *project.Outputlist {
-// 			if pid == Output.Id {
-// 				addedOutputList = append(addedOutputList, Output)
-// 				continue
-// 			}
-// 			addedPids = append(addedPids, pid)
-// 		}
-// 	}
-// 	outputs, err := service.output.GetListByIds(addedPids)
-// 	if err != nil {
-// 		return nil, response.ErrCodeFailed
-// 	}
-// 	addedOutputList = append(addedOutputList, outputs...)
-// 	return addedOutputList, response.ErrCodeSuccess
-// }

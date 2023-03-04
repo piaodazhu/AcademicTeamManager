@@ -5,13 +5,12 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `project`;
 CREATE TABLE `project` (
   `id` bigint NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `name` varchar(200) DEFAULT NULL COMMENT '合同名称',
+  `name` varchar(200) DEFAULT NULL COMMENT '项目名称',
   `begin_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '开始时间',
   `over_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL COMMENT '结束时间',
   `remark` varchar(80) DEFAULT NULL COMMENT '备注',
-  `cid` bigint DEFAULT NULL COMMENT '客户编号',
-  `outputlist` json DEFAULT NULL COMMENT '产品编号和数量',
-  `status` tinyint DEFAULT NULL COMMENT '状态',
+  `outputlist` json DEFAULT NULL COMMENT '成果产出',
+  `finishrate` decimal(10,2) DEFAULT NULL COMMENT '完成率',
   `creator` bigint DEFAULT NULL COMMENT '创建人',
   PRIMARY KEY (`id`),
   KEY `idx_creator` (`creator`)

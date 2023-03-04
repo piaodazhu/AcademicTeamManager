@@ -7,9 +7,9 @@
                         <search-outlined style="color: rgba(0, 0, 0, 0.45)" @click="onSearch" />
                     </template>
                 </a-input>
-                <a-button :type="buttonType.bt1" @click="onProjectList">全部项目</a-button>
-                <!-- <a-button :type="buttonType.bt2" @click="onProjectStatus(1)">已完成项目</a-button>
-                <a-button :type="buttonType.bt3" @click="onProjectStatus(2)">进行中项目</a-button> -->
+                <a-button :type="buttonType.bt1" @click="onSortProject(1)">全部项目</a-button>
+                <a-button :type="buttonType.bt2" @click="onSortProject(2)">按完成度降序</a-button>
+                <a-button :type="buttonType.bt3" @click="onSortProject(3)">按完成度升序</a-button>
                 <a-button type="primary" @click="onDelete" :disabled="disabled" danger>删除</a-button>
             </a-space>
             <div>
@@ -32,7 +32,7 @@
                 <template v-if="column.dataIndex === 'id'">
                     <a @click="onEdit(record)">{{ text }}</a>
                 </template>
-                <template v-if="column.dataIndex === 'amount'">
+                <template v-if="column.dataIndex === 'finishrate'">
                     <span style="color: #ff991f">{{ text }}</span>
                 </template>
                 <!-- <template v-if="column.dataIndex === 'finishrate'">
@@ -95,8 +95,7 @@
                     <a-row :gutter="16">
                         <a-col :span="24">
                             <a-form-item label="项目成果" name="output">
-                                <a-button type="primary" @click="onAddOutput"
-                                    style="float: right;margin-bottom: 10px;">
+                                <a-button type="primary" @click="onAddOutput" style="float: right;margin-bottom: 10px;">
                                     添加成果</a-button>
                                 <a-table rowKey="id" :columns="outputColumns" :data-source="data.outputList"
                                     :scroll="{ y: '59vh' }" class="ant-table-striped"
@@ -128,7 +127,9 @@
                     <a-row>
                         <a-col :span="24">
                             <div style="float: right;margin: 0 20px;">
-                                <span>已选择成果：{{ data.outputList.length }}种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总权重：{{ project.weight.toFixed(2) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;完成度：<span style="width: 80px;">{{ project.finishrate.toFixed(2) }}</span>
+                                <span>已选择成果：{{ data.outputList.length }}种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总权重：{{
+                                    project.weight.toFixed(2) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;完成度：<span
+                                    style="width: 80px; color: #ff991f">{{ project.finishrate.toFixed(2) }}</span>
                             </div>
                         </a-col>
                     </a-row>
@@ -179,8 +180,14 @@ import Spot from '../components/Spot.vue';
 
 const query = reactive({
     id: undefined,
-    status: undefined
+    finishrate: undefined
 })
+
+const sorttype = reactive(
+    {
+        type: 1
+    }
+)
 
 const onSearch = () => {
     projectList()
@@ -194,12 +201,18 @@ const onProjectList = () => {
     projectList()
 }
 
-// const onProjectStatus = (status) => {
+// const onProjectStatus = (isFinish) => {
+//     if (isFinish) {}
 //     query.status = status
 //     pagination.current = 1
 //     setButtonType(status)
 //     projectList()
 // }
+
+const onSortProject = (type) => {
+    sorttype.type = type
+    projectList()
+}
 
 // 按钮默认类型
 const buttonType = reactive({
@@ -249,6 +262,10 @@ const columns = [{
     title: '结项时间',
     dataIndex: 'overTime',
     width: 120,
+}, {
+    title: '完成度',
+    dataIndex: 'finishrate',
+    width: 80,
 }, {
     title: '备注',
     dataIndex: 'remark',
@@ -360,6 +377,7 @@ const onCreate = () => {
     project.outputlist = []
     // data.addedOutputList = []
     data.outputList = []
+    data.weight = 0
 }
 
 const onEdit = (row) => {
@@ -377,6 +395,7 @@ const onEdit = (row) => {
             project.beginTime = p.beginTime
             project.overTime = p.overTime
             project.remark = p.remark
+            project.finishrate = p.finishrate
             // project.status = p.status
             if (p.outputlist == null) {
                 project.outputlist = []
@@ -387,7 +406,7 @@ const onEdit = (row) => {
                 // data.addedOutputList = p.outputlist
                 data.outputList = p.outputlist
             }
-            
+
             calculatedWeight()
         }
     })
@@ -408,6 +427,7 @@ const onSave = () => {
                 // status: project.status,
                 // outputlist: data.addedOutputList,
                 outputlist: data.outputList,
+                finishrate: project.finishrate
             }
             createProject(param).then((res) => {
                 if (res.data.code == 0) {
@@ -429,6 +449,7 @@ const onSave = () => {
                 // status: project.status,
                 // outputlist: data.addedOutputList,
                 outputlist: data.outputList,
+                finishrate: project.finishrate
             }
             updateProject(param).then((res) => {
                 if (res.data.code == 0) {
@@ -473,14 +494,16 @@ onMounted(() => { projectList() })
 
 const onPagination = (page) => {
     pagination.current = page
-    projectList(query.status)
+    projectList()
 }
 const projectList = () => {
     let param = {
         // id: parseInt(query.id == undefined || query.id == '' ? '0' : query.id),
-        status: query.status,
+        // status: query.status,
+        Name: project.name,
         pageNum: pagination.current,
-        pageSize: pagination.pageSize
+        pageSize: pagination.pageSize,
+        sorttype: sorttype.type
     }
     if (query.id != undefined && query.id != '') {
         param.id = parseInt(query.id)
@@ -550,13 +573,13 @@ const delOutput = (row) => {
             data.outputList.splice(i, 1);
         }
     }
-    console.log(data.outputList)
+    // console.log(data.outputList)
     calculatedWeight()
 }
 
 const onConfirm = () => {
-    console.log("ids", data.outputIds)
-    console.log(data.defaultSelectedIds)
+    // console.log("ids", data.outputIds)
+    // console.log(data.defaultSelectedIds)
     let param = {
         id: data.projectId,
         oids: data.outputIds
@@ -570,18 +593,18 @@ const onConfirm = () => {
     outputListVisible.value = false
 }
 
-const getStudentOption = () => {
-    queryStudentOption().then((res) => {
-        if (res.data.code == 0) {
-            data.studentOption = res.data.data
-            console.log("opt", data.studentOption)
-        }
-    })
-}
+// const getStudentOption = () => {
+//     queryStudentOption().then((res) => {
+//         if (res.data.code == 0) {
+//             data.studentOption = res.data.data
+//             console.log("opt", data.studentOption)
+//         }
+//     })
+// }
 
-const changeStudentOption = (value) => {
-    project.cid.value = value
-}
+// const changeStudentOption = (value) => {
+//     project.cid.value = value
+// }
 
 const calculatedWeight = () => {
     project.weight = 0

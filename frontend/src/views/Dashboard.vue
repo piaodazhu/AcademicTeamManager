@@ -49,7 +49,7 @@
         </a-row>
         <a-row :gutter="16">
             <a-col :span="8">
-                <a-card class="card" style="height: 60vh;margin-top: 20px;">
+                <a-card class="card" style="height: 40vh;margin-top: 20px;">
                     <div style="color: #606266;font-size: 16px;font-weight: 600;">
                         <span>学生团队</span>
                         <a-tooltip placement="right">
@@ -63,7 +63,7 @@
                 </a-card>
             </a-col>
             <a-col :span="8">
-                <a-card class="card" style="height: 60vh;margin-top: 20px;">
+                <a-card class="card" style="height: 40vh;margin-top: 20px;">
                     <div style="color: #606266;font-size: 16px;font-weight: 600;">
                         <span>项目成果数量</span>
                         <a-tooltip placement="right">
@@ -77,7 +77,7 @@
                 </a-card>
             </a-col>
             <a-col :span="8">
-                <a-card class="card" style="height: 60vh;margin-top: 20px;">
+                <a-card class="card" style="height: 40vh;margin-top: 20px;">
                     <div style="color: #606266;font-size: 16px;font-weight: 600;">
                         <span>成果形式</span>
                         <a-tooltip placement="right">
@@ -90,6 +90,23 @@
                     <div id="Output" style="width: 100%; height: 360px;"></div>
                 </a-card>
             </a-col>
+        </a-row>
+        <a-row :gutter="16">
+            <a-col :span="24">
+                <a-card class="card" style="height: 35vh;margin-top: 20px;">
+                <div style="color: #606266;font-size: 16px;font-weight: 600;">
+                    <span>项目完成进度</span>
+                    <a-tooltip placement="right">
+                        <template #title>
+                            <span>项目完成进度，(0-1)</span>
+                        </template>
+                        <question-circle-two-tone style="margin-left: 5px" />
+                    </a-tooltip>
+                </div>
+                <div id="ProjectProgress" style="width: 100%; height: 360px;"></div>
+            </a-card>
+            </a-col>
+            
         </a-row>
     </div>
 </template>
@@ -127,7 +144,7 @@ const initChart = () => {
             data.Students = res.data.data.student_num
             data.projects = res.data.data.project_num
             data.outputs = res.data.data.output_num
-            
+
             echarts.init(document.getElementById("Student")).setOption({
                 tooltip: {
                     trigger: 'item'
@@ -241,9 +258,53 @@ const initChart = () => {
                     }
                 ]
             })
+
+            var myChart = echarts.init(document.getElementById('ProjectProgress'));
+            var option;
+
+            option = {
+                color: ['#ee6666'],
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: res.data.data.progress_bar.map(obj => {return obj.name}),
+                        axisTick: {
+                            alignWithLabel: true
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Direct',
+                        type: 'bar',
+                        barWidth: '60%',
+                        data: res.data.data.progress_bar.map(obj => {return obj.value})
+                    }
+                ]
+            };
+
+            option && myChart.setOption(option);
         }
     })
 }
+
 
 // // 获取用户订阅信息
 // const subscribeInfo = () => {
