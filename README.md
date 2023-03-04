@@ -1,7 +1,7 @@
 # AcademicTeamManager - ATM
 A academic team management system, which can be used for making academic discussion plan and team status visualization, written in Go and Vue3.
 
-> [Demo is available here](https://piaodazhu.github.io/) Due to legal restrictions, the front-end part of this demo is deployed on Github Pages, and you **must set your browser to allow unsafe content** in order to experience it properly.
+> [Demo is available here](https://piaodazhu.github.io/) Due to legal restrictions, the front-end part of this demo is deployed on Github Pages, and you **must set your Edge browser to allow unsafe content** in order to experience it properly, and Safari is not able to set this.
 
 # Environment Requirement
 
