@@ -87,6 +87,10 @@ func (dao OutputDao) Delete(params *model.OutputDeleteParam) error {
 	return global.MysqlClient.Delete(&model.Output{}, params.Ids).Error
 }
 
-// func (dao OutputDao) GetListByUids(uid int64) ([]*model.OutputList, error) {	
-// 	where := 
-// }
+func (dao OutputDao) GetListByIds(ids []int64) ([]*model.Outputs, error) {
+	outputs := []*model.Outputs{}
+	if err := global.MysqlClient.Table(OUTPUT).Find(&outputs, ids).Error; err != nil {
+		return nil, err
+	}
+	return outputs, nil
+}

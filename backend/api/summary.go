@@ -18,11 +18,10 @@ func NewSummaryAPI() SummaryAPI {
 
 func (api SummaryAPI) Get(ctx *gin.Context) {
 	uid, err1 := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
-	days, err2 := strconv.Atoi(ctx.Query("daysRange"))
-	if err1 != nil || err2 != nil {
+	if err1 != nil {
 		response.Result(response.ErrCodeParamInvalid, nil, ctx)
 		return
 	}
-	sum := api.service.Summary(uid, days)
+	sum := api.service.Summary(uid)
 	response.Result(response.ErrCodeSuccess, sum, ctx)
 }

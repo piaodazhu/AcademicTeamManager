@@ -44,7 +44,7 @@ export function queryProjectInfo(param) {
 
 export function queryProjectOlist(param) {
     return request({
-		url: '/project/olist',
+		url: '/project/outputs/update',
 		method: 'post',
 		data: param,
 	})

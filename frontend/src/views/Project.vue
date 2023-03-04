@@ -2,19 +2,19 @@
     <div :style="{ padding: '20px 20px 12px 20px' }">
         <div style="display: flex;justify-content: space-between;margin-bottom: 20px;">
             <a-space>
-                <a-input v-model:value="query.id" placeholder="合同编号" style="width: 250px; margin-right: 10px;">
+                <a-input v-model:value="query.id" placeholder="项目编号" style="width: 250px; margin-right: 10px;">
                     <template #suffix>
                         <search-outlined style="color: rgba(0, 0, 0, 0.45)" @click="onSearch" />
                     </template>
                 </a-input>
-                <a-button :type="buttonType.bt1" @click="onProjectList">全部合同</a-button>
-                <a-button :type="buttonType.bt2" @click="onProjectStatus(1)">已签约合同</a-button>
-                <a-button :type="buttonType.bt3" @click="onProjectStatus(2)">未签约合同</a-button>
+                <a-button :type="buttonType.bt1" @click="onProjectList">全部项目</a-button>
+                <!-- <a-button :type="buttonType.bt2" @click="onProjectStatus(1)">已完成项目</a-button>
+                <a-button :type="buttonType.bt3" @click="onProjectStatus(2)">进行中项目</a-button> -->
                 <a-button type="primary" @click="onDelete" :disabled="disabled" danger>删除</a-button>
             </a-space>
             <div>
                 <a-space size="middle">
-                    <a-button type="primary" @click="onCreate">新建</a-button>
+                    <a-button type="primary" @click="onCreate">新建项目</a-button>
                     <a-button type="primary" @click="onExport" ghost>
                         <template #icon>
                             <ExportOutlined />
@@ -23,7 +23,7 @@
             </div>
         </div>
         <a-table rowKey="id"
-            :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectedConteactIds, getCheckboxProps: defaultSelected }"
+            :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectedProjectIds, getCheckboxProps: defaultSelected }"
             :columns="columns" :data-source="data.projectList"
             :pagination="{ current: pagination.current, pageSize: pagination.pageSize, total: pagination.total, onChange: onPagination }"
             :scroll="{ y: '59vh' }" class="ant-table-striped"
@@ -35,32 +35,31 @@
                 <template v-if="column.dataIndex === 'amount'">
                     <span style="color: #ff991f">{{ text }}</span>
                 </template>
-                <template v-if="column.dataIndex === 'status'">
-                    <Spot v-if="text == 1" type="success" title="已签约" />
-                    <Spot v-if="text == 2" type="danger" title="未签约" />
-                </template>
+                <!-- <template v-if="column.dataIndex === 'finishrate'">
+                    <Spot v-if="text == 1" type="success" title="已完成" />
+                    <Spot v-if="text == 2" type="danger" title="未完成" />
+                </template> -->
             </template>
         </a-table>
-        <!-- 新建、编辑合同 -->
         <a-modal v-model:visible="visible" :title="title" @ok="onSave" @cancel="onCancel" cancelText="取消" okText="保存"
             width="800px" :centered="true">
             <div style="height: 55vh;overflow-y: scroll;padding: 0 15px;">
                 <a-form ref="projectFormRef" :model="project" layout="vertical" name="project" :rules="rules">
                     <a-row :gutter="16">
                         <a-col :span="12">
-                            <a-form-item label="合同编号" name="id">
+                            <a-form-item label="项目编号" name="id">
                                 <a-input v-model:value="project.id" :disabled="true" placeholder="根据编号规则自动生成" />
                             </a-form-item>
                         </a-col>
                         <a-col :span="12">
-                            <a-form-item label="合同名称" name="name">
+                            <a-form-item label="项目名称" name="name">
                                 <a-input v-model:value="project.name" />
                             </a-form-item>
                         </a-col>
                     </a-row>
-                    <a-row :gutter="16">
+                    <!-- <a-row :gutter="16">
                         <a-col :span="12">
-                            <a-form-item label="客户名称" name="cid">
+                            <a-form-item label="学生名称" name="cid">
                                 <a-select v-model:value="project.cid" style="width: 100%" placeholder="请选择"
                                     :fieldNames="{ label: 'name', value: 'id' }" :options="data.studentOption"
                                     @focus="getStudentOption" @change="changeStudentOption"></a-select>
@@ -71,58 +70,52 @@
                                 <a-input v-model:value="project.amount" style="width: 100%" :disabled="true" />
                             </a-form-item>
                         </a-col>
-                    </a-row>
+                    </a-row> -->
                     <a-row :gutter="16">
                         <a-col :span="12">
-                            <a-form-item label="合同开始时间" name="beginTime">
+                            <a-form-item label="开始时间" name="beginTime">
                                 <a-date-picker v-model:value="project.beginTime" placeholder="选择日期" style="width: 100%"
                                     format="YYYY-MM-DD" valueFormat="YYYY-MM-DD" />
                             </a-form-item>
                         </a-col>
                         <a-col :span="12">
-                            <a-form-item label="合同结束时间" name="overTime">
+                            <a-form-item label="结项时间" name="overTime">
                                 <a-date-picker v-model:value="project.overTime" placeholder="选择日期" style="width: 100%"
                                     format="YYYY-MM-DD" valueFormat="YYYY-MM-DD" />
                             </a-form-item>
                         </a-col>
                     </a-row>
                     <a-row :gutter="16">
-                        <a-col :span="12">
-                            <a-form-item label="合同状态" name="status">
-                                <a-select v-model:value="project.status" placeholder="请选择">
-                                    <a-select-option :value="1">已生效</a-select-option>
-                                    <a-select-option :value="2">未生效</a-select-option>
-                                </a-select>
-                            </a-form-item>
-                        </a-col>
-                        <a-col :span="12">
-                            <a-form-item label="备注" name="remarks">
-                                <a-input v-model:value="project.remarks" />
+                        <a-col :span="24">
+                            <a-form-item label="备注" name="remark">
+                                <a-input v-model:value="project.remark" />
                             </a-form-item>
                         </a-col>
                     </a-row>
                     <a-row :gutter="16">
                         <a-col :span="24">
-                            <a-form-item label="产品" name="output">
+                            <a-form-item label="项目成果" name="output">
                                 <a-button type="primary" @click="onAddOutput"
                                     style="float: right;margin-bottom: 10px;">
-                                    添加产品</a-button>
-                                <a-table rowKey="id" :columns="outputColumns" :data-source="data.addedOutputList"
+                                    添加成果</a-button>
+                                <a-table rowKey="id" :columns="outputColumns" :data-source="data.outputList"
                                     :scroll="{ y: '59vh' }" class="ant-table-striped"
                                     :row-class-name="(_record, index) => (index % 2 === 1 ? 'table-striped' : null)"
                                     :pagination="false" bordered>
                                     <template #bodyCell="{ column, text, record }">
                                         <template v-if="column.dataIndex === 'type'">
-                                            <span v-if="text == 1">默认</span>
+                                            <span v-if="text == 1">期刊论文</span>
+                                            <span v-if="text == 2">会议论文</span>
+                                            <span v-if="text == 3">学术专著</span>
+                                            <span v-if="text == 4">发明专利</span>
                                         </template>
-                                        <template v-if="column.dataIndex === 'price'">
+                                        <template v-if="column.dataIndex === 'weight'">
                                             <span style="color: #ff991f">{{ text }}</span>
                                         </template>
-                                        <template v-if="column.dataIndex === 'count'">
-                                            <a-input-number v-model:value="record.count" @change="calculatedAmount" />
-                                        </template>
-                                        <template v-if="column.dataIndex === 'total'">
-                                            <span>{{ record.total = record.price * record.count }}</span>
+                                        <template v-if="column.dataIndex === 'status'">
+                                            <Spot v-if="text == 0" type="danger" title="未设置" />
+                                            <Spot v-if="text == 1" type="success" title="已完成" />
+                                            <Spot v-if="text == 2" type="warning" title="推进中" />
                                         </template>
                                         <template v-if="column.dataIndex === 'operation'">
                                             <a @click="delOutput(record)">删除</a>
@@ -135,8 +128,7 @@
                     <a-row>
                         <a-col :span="24">
                             <div style="float: right;margin: 0 20px;">
-                                <span>已选择产品：{{ data.addedOutputList.length }}种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总金额：</span>
-                                <a-input-number v-model:value="project.amount" style="width: 200px;" />
+                                <span>已选择成果：{{ data.outputList.length }}种&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;总权重：{{ project.weight.toFixed(2) }}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;完成度：<span style="width: 80px;">{{ project.finishrate.toFixed(2) }}</span>
                             </div>
                         </a-col>
                     </a-row>
@@ -144,7 +136,7 @@
             </div>
         </a-modal>
         <!-- 添加产品 -->
-        <a-modal v-model:visible="outputListVisible" title="添加产品" @cancel="onCancelOutputList" @ok="onConfirm"
+        <a-modal v-model:visible="outputListVisible" title="添加成果" @cancel="onCancelOutputList" @ok="onConfirm"
             cancelText="取消" okText="确定" width="800px" style="top: 80px" :getCheckboxProps="defaultSelected">
             <div style="height: 55vh;padding: 0 15px;">
                 <a-table rowKey="id"
@@ -155,16 +147,17 @@
                     :row-class-name="(_record, index) => (index % 2 === 1 ? 'table-striped' : null)" bordered>
                     <template #bodyCell="{ column, text, record }">
                         <template v-if="column.dataIndex === 'name'">
-                            <a @click="onEdit(record)">{{ text }}</a>
+                            <a>{{ text }}</a>
                         </template>
                         <template v-if="column.dataIndex === 'status'">
-                            <span v-if="text == 1">上架</span>
-                            <span v-if="text == 2">下架</span>
+                            <Spot v-if="text == 0" type="danger" title="未设置" />
+                            <Spot v-if="text == 1" type="success" title="已完成" />
+                            <Spot v-if="text == 2" type="warning" title="推进中" />
                         </template>
                         <template v-if="column.dataIndex === 'type'">
                             <span v-if="text == 1">默认</span>
                         </template>
-                        <template v-if="column.dataIndex === 'price'">
+                        <template v-if="column.dataIndex === 'weight'">
                             <span style="color: #ff991f">{{ text }}</span>
                         </template>
                     </template>
@@ -184,18 +177,15 @@ import { queryStudentOption } from "../api/student";
 import { message, Modal } from 'ant-design-vue';
 import Spot from '../components/Spot.vue';
 
-// 条件筛选
 const query = reactive({
     id: undefined,
     status: undefined
 })
 
-// 点击搜索合同
 const onSearch = () => {
     projectList()
 }
 
-// 点击全部合同
 const onProjectList = () => {
     query.id = undefined
     query.status = undefined
@@ -204,13 +194,12 @@ const onProjectList = () => {
     projectList()
 }
 
-// 点击已签约或未签约合同
-const onProjectStatus = (status) => {
-    query.status = status
-    pagination.current = 1
-    setButtonType(status)
-    projectList()
-}
+// const onProjectStatus = (status) => {
+//     query.status = status
+//     pagination.current = 1
+//     setButtonType(status)
+//     projectList()
+// }
 
 // 按钮默认类型
 const buttonType = reactive({
@@ -240,85 +229,48 @@ const setButtonType = (status) => {
     }
 }
 
-// 合同表格字段
 const columns = [{
-    title: '合同编号',
+    title: '项目编号',
     dataIndex: 'id',
-    width: 100,
+    width: 80,
     fixed: 'left',
     ellipsis: true,
 }, {
-    title: '合同名称',
+    title: '项目名称',
     dataIndex: 'name',
-    width: 100,
+    width: 150,
     fixed: 'left',
     ellipsis: true,
 }, {
-    title: '客户名称',
-    dataIndex: 'cname',
-    width: 240,
-}, {
-    title: '合同金额',
-    dataIndex: 'amount',
-    width: 100,
-}, {
-    title: '合同开始时间',
+    title: '开始时间',
     dataIndex: 'beginTime',
-    width: 150,
+    width: 120,
 }, {
-    title: '合同结束时间',
+    title: '结项时间',
     dataIndex: 'overTime',
-    width: 150,
+    width: 120,
 }, {
     title: '备注',
-    dataIndex: 'remarks',
+    dataIndex: 'remark',
     width: 240,
     ellipsis: true,
-}, {
-    title: '签约状态',
-    dataIndex: 'status',
-    width: 100,
-    ellipsis: true,
-}, {
-    title: '创建时间',
-    dataIndex: 'created',
-    width: 185,
-    customRender: text => {
-        return text.value == 0 ? '' : moment(text.value * 1000).format('YYYY-MM-DD HH:mm:ss')
-    }
-}, {
-    title: '更新时间',
-    dataIndex: 'updated',
-    width: 185,
-    customRender: text => {
-        return text.value == 0 ? '' : moment(text.value * 1000).format('YYYY-MM-DD HH:mm:ss')
-    }
 }];
 
-// 新建或编辑合同，已添加产品表格字段
 const outputColumns = [{
-    title: '产品名称',
+    title: '成果名称',
     dataIndex: 'name',
     width: 100,
 }, {
-    title: '产品类别',
+    title: '成果类别',
     dataIndex: 'type',
     width: 90,
 }, {
-    title: '单位',
-    dataIndex: 'unit',
-    width: 80,
+    title: '成果权重',
+    dataIndex: 'weight',
+    width: 60,
 }, {
-    title: '价格',
-    dataIndex: 'price',
-    width: 100,
-}, {
-    title: '数量',
-    dataIndex: 'count',
-    width: 120,
-}, {
-    title: '合计',
-    dataIndex: 'total',
+    title: '完成状态',
+    dataIndex: 'status',
     width: 100,
 }, {
     title: '操作',
@@ -326,78 +278,51 @@ const outputColumns = [{
     width: 100,
 }]
 
-// 产品表格字段
 const outputListColumns = [{
-    title: '产品名称',
+    title: '成果名称',
     dataIndex: 'name',
     width: 100,
     fixed: 'left',
     ellipsis: true,
 }, {
-    title: '是否上下架',
-    dataIndex: 'status',
-    width: 120,
-}, {
-    title: '产品类型',
+    title: '成果类型',
     dataIndex: 'type',
     width: 100,
 }, {
-    title: '产品单位',
-    dataIndex: 'unit',
-    width: 100,
+    title: '成果权重',
+    dataIndex: 'weight',
+    width: 60,
 }, {
-    title: '产品编码',
-    dataIndex: 'code',
-    width: 150,
+    title: '完成状态',
+    dataIndex: 'status',
+    width: 120,
 }, {
-    title: '价格',
-    dataIndex: 'price',
-    width: 150,
-}, {
-    title: '产品描述',
+    title: '成果描述',
     dataIndex: 'description',
     width: 240,
     ellipsis: true,
-}, {
-    title: '创建时间',
-    dataIndex: 'created',
-    width: 185,
-    customRender: text => {
-        let m = moment(text.value * 1000).format('YYYY-MM-DD HH:mm:ss')
-        return m == 'Invalid date' ? '' : m
-    }
-}, {
-    title: '更新时间',
-    dataIndex: 'updated',
-    width: 185,
-    customRender: text => {
-        let m = moment(text.value * 1000).format('YYYY-MM-DD HH:mm:ss')
-        return m == 'Invalid date' ? '' : m
-    }
-}, {
-    title: '创建人',
-    dataIndex: 'creator',
-    width: 150,
 }];
 
 // 表单校验
 const rules = {
-    name: [{ required: true, message: '请输入合同名称', trigger: 'blur' }],
-    cid: [{ required: true, message: '请选择客户', trigger: 'blur' }],
-    status: [{ required: true, message: '请选择合同状态' }]
+    name: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
+    // cid: [{ required: true, message: '请选择客户', trigger: 'blur' }],
+    // status: [{ required: true, message: '请选择项目状态' }]
 };
 
 // 合同属性
 let project = reactive({
     id: undefined,
     name: undefined,
-    amount: undefined,
+    // amount: undefined,
     beginTime: '',
     overTime: '',
-    cid: undefined,
-    remarks: undefined,
-    status: undefined,
+    // cid: undefined,
+    remark: undefined,
+    // status: undefined,
     outputlist: [],
+    weight: 0,
+    finishrate: 0
 });
 
 const data = reactive({
@@ -406,7 +331,7 @@ const data = reactive({
     projectIds: [],
     outputList: [],
     outputIds: [],
-    addedOutputList: [],
+    // addedOutputList: [],
     studentOption: [],
     defaultSelectedIds: []
 })
@@ -425,51 +350,64 @@ const operation = ref(0);
 const projectFormRef = ref();
 const outputListVisible = ref(false);
 
-// 点击新建合同
 const onCreate = () => {
-    title.value = '新建合同'
+    title.value = '新建项目'
     operation.value = 1
     visible.value = true
+    project.id = undefined
+    project.name = undefined
+    project.weight = 0.0
+    project.outputlist = []
+    // data.addedOutputList = []
+    data.outputList = []
 }
 
-// 点击编辑合同
 const onEdit = (row) => {
-    title.value = '编辑合同'
+    title.value = '编辑项目'
     operation.value = 2
-    getStudentOption()
+    // getStudentOption()
     let param = { id: row.id }
     queryProjectInfo(param).then((res) => {
         if (res.data.code == 0) {
             let p = res.data.data
             project.id = p.id
             project.name = p.name
-            project.cid = p.cid
-            project.amount = p.amount
+            // project.cid = p.cid
+            // project.amount = p.amount
             project.beginTime = p.beginTime
             project.overTime = p.overTime
-            project.remarks = p.remarks
-            project.status = p.status
-            project.outputlist = p.outputlist
-            data.addedOutputList = p.outputlist
+            project.remark = p.remark
+            // project.status = p.status
+            if (p.outputlist == null) {
+                project.outputlist = []
+                // data.addedOutputList = []
+                data.outputList = []
+            } else {
+                project.outputlist = p.outputlist
+                // data.addedOutputList = p.outputlist
+                data.outputList = p.outputlist
+            }
+            
+            calculatedWeight()
         }
     })
     data.projectId = row.id
     visible.value = true
 }
 
-// 点击保存合同
 const onSave = () => {
     projectFormRef.value.validateFields().then(() => {
         if (operation.value == 1) {
             let param = {
                 name: project.name,
-                cid: project.cid,
-                amount: project.amount,
+                // cid: project.cid,
+                // amount: project.amount,
                 beginTime: project.beginTime,
                 overTime: project.overTime,
-                remarks: project.remarks,
-                status: project.status,
-                outputlist: data.addedOutputList,
+                remark: project.remark,
+                // status: project.status,
+                // outputlist: data.addedOutputList,
+                outputlist: data.outputList,
             }
             createProject(param).then((res) => {
                 if (res.data.code == 0) {
@@ -483,13 +421,14 @@ const onSave = () => {
             let param = {
                 id: project.id,
                 name: project.name,
-                cid: project.cid,
-                amount: project.amount,
+                // cid: project.cid,
+                // amount: project.amount,
                 beginTime: project.beginTime,
                 overTime: project.overTime,
-                remarks: project.remarks,
-                status: project.status,
-                outputlist: data.addedOutputList,
+                remark: project.remark,
+                // status: project.status,
+                // outputlist: data.addedOutputList,
+                outputlist: data.outputList,
             }
             updateProject(param).then((res) => {
                 if (res.data.code == 0) {
@@ -504,7 +443,7 @@ const onSave = () => {
     });
 };
 
-// 点击删除合同
+
 const onDelete = () => {
     let param = {
         ids: data.projectIds
@@ -530,20 +469,21 @@ const onDelete = () => {
     });
 }
 
-// 初始化数据
 onMounted(() => { projectList() })
 
-// 分页查询合同列表
 const onPagination = (page) => {
     pagination.current = page
     projectList(query.status)
 }
 const projectList = () => {
     let param = {
-        id: parseInt(query.id == undefined || query.id == '' ? '0' : query.id),
+        // id: parseInt(query.id == undefined || query.id == '' ? '0' : query.id),
         status: query.status,
         pageNum: pagination.current,
         pageSize: pagination.pageSize
+    }
+    if (query.id != undefined && query.id != '') {
+        param.id = parseInt(query.id)
     }
     queryProjectList(param).then((res) => {
         if (res.data.code == 0) {
@@ -553,7 +493,6 @@ const projectList = () => {
     })
 }
 
-// 点击添加产品
 const onAddOutput = () => {
     let param = {
         pageNum: pagination.current,
@@ -566,15 +505,14 @@ const onAddOutput = () => {
         }
     })
     data.defaultSelectedIds = []
-    if (data.addedOutputList.length > 0) {
-        for (let i = 0; i < data.addedOutputList.length; i++) {
-            data.defaultSelectedIds[i] = data.addedOutputList[i].id
+    if (data.outputList.length > 0) {
+        for (let i = 0; i < data.outputList.length; i++) {
+            data.defaultSelectedIds[i] = data.outputList[i].id
         }
     }
     outputListVisible.value = true
 }
 
-// 分页查询产品列表
 const onPaginationOutput = (page) => {
     pagination.current = page
     let param = {
@@ -589,8 +527,7 @@ const onPaginationOutput = (page) => {
     })
 }
 
-// 已选中的合同ID
-const onSelectedConteactIds = selectedRowKeys => {
+const onSelectedProjectIds = selectedRowKeys => {
     data.projectIds = selectedRowKeys
     if (data.projectIds.length !== 0) {
         disabled.value = false
@@ -599,37 +536,40 @@ const onSelectedConteactIds = selectedRowKeys => {
     }
 };
 
-// 已选中的产品ID
+
 const onSelectedOutputIds = selectedRowKeys => {
     data.outputIds = selectedRowKeys
     data.defaultSelectedIds = selectedRowKeys
+    console.log(data.outputIds)
 };
 
-// 删除选中的产品
+
 const delOutput = (row) => {
-    for (let i = 0; i < data.addedOutputList.length; i++) {
-        if (data.addedOutputList[i].id == row.id) {
-            data.addedOutputList.splice(i, 1);
+    for (let i = 0; i < data.outputList.length; i++) {
+        if (data.outputList[i].id == row.id) {
+            data.outputList.splice(i, 1);
         }
     }
-    calculatedAmount()
+    console.log(data.outputList)
+    calculatedWeight()
 }
 
 const onConfirm = () => {
     console.log("ids", data.outputIds)
+    console.log(data.defaultSelectedIds)
     let param = {
         id: data.projectId,
-        pids: data.outputIds
+        oids: data.outputIds
     }
     queryProjectOlist(param).then((res) => {
         if (res.data.code == 0) {
-            data.addedOutputList = res.data.data
+            data.outputList = res.data.data
+            calculatedWeight()
         }
     })
     outputListVisible.value = false
 }
 
-// 查询客户选项
 const getStudentOption = () => {
     queryStudentOption().then((res) => {
         if (res.data.code == 0) {
@@ -643,20 +583,24 @@ const changeStudentOption = (value) => {
     project.cid.value = value
 }
 
-// 计算金额
-const calculatedAmount = () => {
-    project.amount = 0
-    let totalAmount = 0
-    for (let i = 0; i < data.addedOutputList.length; i++) {
-        totalAmount = totalAmount + (data.addedOutputList[i].price * data.addedOutputList[i].count)
+const calculatedWeight = () => {
+    project.weight = 0
+    let totalWeight = 0.0
+    let finishWeight = 0.0
+    for (let i = 0; i < data.outputList.length; i++) {
+        totalWeight = totalWeight + data.outputList[i].weight
+        if (data.outputList[i].status == 1) {
+            finishWeight += data.outputList[i].weight
+        }
     }
-    project.amount = totalAmount
+    project.weight = totalWeight
+    project.finishrate = finishWeight / totalWeight
 }
 
 // 点击合同取消按钮
 const onCancel = () => {
     projectFormRef.value.resetFields()
-    data.addedOutputList = []
+    data.outputList = []
     data.projectId = undefined
     visible.value = false
 };
@@ -671,7 +615,7 @@ const onExport = () => {
                 type: "application/vnd.ms-excel"
             })
             let a = document.createElement('a')
-            a.setAttribute("download", "合同信息.xlsx");
+            a.setAttribute("download", "项目信息.xlsx");
             a.href = window.URL.createObjectURL(blob)
             a.click()
             window.URL.revokeObjectURL(a.href)
@@ -679,7 +623,6 @@ const onExport = () => {
     })
 }
 
-// 点击取消产品列表
 const onCancelOutputList = () => {
     outputListVisible.value = false
     data.projectId = undefined

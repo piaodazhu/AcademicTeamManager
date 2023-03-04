@@ -221,6 +221,9 @@ const cancelFilter = () => {
 
 const options = reactive({
     type: [{
+        value: 0,
+        label: '未设置',
+    }, {
         value: 1,
         label: '博士',
     }, {

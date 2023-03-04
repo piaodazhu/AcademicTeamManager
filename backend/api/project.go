@@ -40,6 +40,18 @@ func (api ProjectAPI) GetInfo(ctx *gin.Context) {
 
 }
 
+func (api ProjectAPI) UpdateOutputs(ctx *gin.Context) {
+	var params model.ProjectOutputQueryParam
+	uid, err1 := strconv.ParseInt(ctx.Request.Header.Get("uid"), 10, 64)
+	err2 := ctx.ShouldBind(&params)
+	if err1 != nil || err2 != nil {
+		response.Result(response.ErrCodeParamInvalid, nil, ctx)
+		return
+	}
+	outputList, errCode := api.service.UpdateOutputs(uid, &params)
+	response.Result(errCode, outputList, ctx)
+}
+
 func (api ProjectAPI) Delete(ctx *gin.Context) {
 	var params model.ProjectDeleteParam
 	if err := ctx.ShouldBind(&params); err != nil {

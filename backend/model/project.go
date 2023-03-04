@@ -6,33 +6,33 @@ import (
 )
 
 type Project struct {
-	Id          int64        `gorm:"primaryKey"`
-	Name        string       `gorm:"column:name"`
-	BeginTime   string       `gorm:"column:begin_time"`
-	OverTime    string       `gorm:"column:over_time"`
-	Remark      string       `gorm:"column:remark"`
-	Cid         int64        `gorm:"column:cid"`
+	Id        int64  `gorm:"primaryKey"`
+	Name      string `gorm:"column:name"`
+	BeginTime string `gorm:"column:begin_time"`
+	OverTime  string `gorm:"column:over_time"`
+	Remark    string `gorm:"column:remark"`
+	// Cid         int64        `gorm:"column:cid"`
 	Outputslist *Outputslist `gorm:"column:outputlist;type:json"`
 	Status      int          `gorm:"column:status"`
 	Creator     int64        `gorm:"column:creator"`
 }
 
 type ProjectCreateParam struct {
-	Name        string       `json:"name" binding:"required"`
-	BeginTime   string       `json:"beginTime" binding:"-"`
-	OverTime    string       `json:"overTime" binding:"-"`
-	Remark      string       `json:"remark" binding:"-"`
-	Cid         int64        `json:"cid" binding:"required,gt=0"`
+	Name      string `json:"name" binding:"required"`
+	BeginTime string `json:"beginTime" binding:"-"`
+	OverTime  string `json:"overTime" binding:"-"`
+	Remark    string `json:"remark" binding:"-"`
+	// Cid         int64        `json:"cid" binding:"required,gt=0"`
 	Outputslist *Outputslist `json:"outputlist"`
 }
 
 type ProjectUpdateParam struct {
-	Id          int64        `json:"id" binding:"required,gt=0"`
-	Name        string       `json:"name" binding:"-"`
-	BeginTime   string       `json:"beginTime" binding:"-"`
-	OverTime    string       `json:"overTime" binding:"-"`
-	Remark      string       `json:"remark" binding:"-"`
-	Cid         int64        `json:"cid" binding:"omitempty,gt=0"`
+	Id        int64  `json:"id" binding:"required,gt=0"`
+	Name      string `json:"name" binding:"-"`
+	BeginTime string `json:"beginTime" binding:"-"`
+	OverTime  string `json:"overTime" binding:"-"`
+	Remark    string `json:"remark" binding:"-"`
+	// Cid         int64        `json:"cid" binding:"omitempty,gt=0"`
 	Outputslist *Outputslist `json:"outputlist"`
 }
 
@@ -45,6 +45,11 @@ type ProjectQueryParam struct {
 	Name   string `form:"name" binding:"-"`
 	Status int    `form:"status" binding:"omitempty,oneof=1 2"`
 	Page   Page
+}
+
+type ProjectOutputQueryParam struct {
+	Id   int64   `form:"id" binding:"omitempty,gt=0"`
+	Oids []int64 `form:"oids" binding:"-"`
 }
 
 type ProjectList struct {
@@ -79,6 +84,7 @@ type Outputs struct {
 	Id     int64   `json:"id"`
 	Name   string  `json:"name"`
 	Type   int     `json:"type"`
+	Status int     `json:"status"`
 	Weight float64 `json:"weight"`
 }
 

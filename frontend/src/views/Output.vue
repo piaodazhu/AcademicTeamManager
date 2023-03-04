@@ -2,28 +2,53 @@
     <div :style="{ padding: '20px 20px 12px 20px' }">
         <div style="display: flex;justify-content: space-between;margin-bottom: 20px;">
             <a-space>
-                <a-input v-model:value="keyWord" placeholder="成果名称" style="width: 280px; margin-right: 10px;">
+                <a-input v-model:value="query.name" placeholder="成果名称" style="width: 280px; margin-right: 10px;">
                     <template #suffix>
-                        <search-outlined style="color: rgba(0, 0, 0, 0.45)" @click="outputList(0)" />
+                        <search-outlined style="color: rgba(0, 0, 0, 0.45)" @click="outputList()" />
                     </template>
                 </a-input>
-                <a-button :type="buttonType.bt1" @click="outputList(0)">全部成果</a-button>
-                <a-button :type="buttonType.bt2" @click="outputList(1)">期刊论文</a-button>
-                <a-button :type="buttonType.bt3" @click="outputList(2)">会议论文</a-button>
-                <a-button :type="buttonType.bt4" @click="outputList(3)">学术专著</a-button>
-                <a-button :type="buttonType.bt5" @click="outputList(4)">发明专利</a-button>
+                <a-button :type="buttonType.bt1" @click="onOutputs">全部成果</a-button>
+                <a-button :type="buttonType.bt2" @click="onFilter">
+                    <template #icon>
+                        <FilterOutlined />
+                    </template>高级筛选</a-button>
                 <a-button type="primary" @click="onDelete" :disabled="disabled" danger>删除成果</a-button>
             </a-space>
             <div>
                 <a-space size="middle">
                     <a-button type="primary" @click="onCreate">新建成果</a-button>
-                <a-button type="primary" @click="onExport" ghost>
-                    <template #icon>
-                        <ExportOutlined />
-                    </template>导出</a-button>
+                    <a-button type="primary" @click="onExport" ghost>
+                        <template #icon>
+                            <ExportOutlined />
+                        </template>导出</a-button>
                 </a-space>
             </div>
         </div>
+
+        <a-modal v-model:visible="visibleFilter" title="高级筛选" @ok="confirmFilter" @cancel="cancelFilter" cancelText="取消"
+            okText="确定" width="800px" style="top: 150px;">
+            <a-row :gutter="20">
+                <a-col :span="6">
+                    <a-select v-model:value="query.type" placeholder="成果类型" style="width: 100%;"
+                        :allowClear="true">
+                        <a-select-option :value="0">未设置</a-select-option>
+                        <a-select-option :value="1">期刊论文</a-select-option>
+                        <a-select-option :value="2">会议论文</a-select-option>
+                        <a-select-option :value="3">学术专著</a-select-option>
+                        <a-select-option :value="4">发明专利</a-select-option>
+                    </a-select>
+                </a-col>
+                <a-col :span="6">
+                    <a-select v-model:value="query.status" placeholder="完成状态" style="width: 100%;"
+                        :allowClear="true">
+                        <a-select-option :value="0">未设置</a-select-option>
+                        <a-select-option :value="1">已完成</a-select-option>
+                        <a-select-option :value="2">推进中</a-select-option>
+                    </a-select>
+                </a-col>
+            </a-row>
+        </a-modal>
+
         <a-table rowKey="id" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
             :columns="columns" :data-source="data.outputList"
             :pagination="{ current: pagination.current, pageSize: pagination.pageSize, total: pagination.total, onChange: onPagination }"
@@ -110,6 +135,13 @@ import { createOutput, updateOutput, queryOutputList, deleteOutput, queryOutputI
 import Spot from '../components/Spot.vue';
 import { message, Modal } from 'ant-design-vue';
 
+
+const query = reactive({
+    name: undefined,
+    type: undefined,
+    status: undefined,
+})
+
 // 表格字段
 const columns = [{
     title: '成果名称',
@@ -173,50 +205,33 @@ const visible = ref(false);
 const disabled = ref(true)
 const operation = ref(0);
 const outputFormRef = ref();
-const keyWord = ref('')
 
 // 按钮状态
 const buttonType = reactive({
     bt1: 'primary',
     bt2: 'default',
-    bt3: 'default',
-    bt4: 'default',
-    bt5: 'default',
 })
-const setButtonType = (type) => {
-    if (type == 0) {
-        buttonType.bt1 = 'primary'
-        buttonType.bt2 = 'default'
-        buttonType.bt3 = 'default'
-        buttonType.bt4 = 'default'
-        buttonType.bt5 = 'default'
-    } else if (type == 1) {
-        buttonType.bt1 = 'default'
-        buttonType.bt2 = 'primary'
-        buttonType.bt3 = 'default'
-        buttonType.bt4 = 'default'
-        buttonType.bt5 = 'default'
 
-    } else if (type == 2) {
-        buttonType.bt1 = 'default'
-        buttonType.bt2 = 'default'
-        buttonType.bt3 = 'primary'
-        buttonType.bt4 = 'default'
-        buttonType.bt5 = 'default'
-    } else if (type == 3) {
-        buttonType.bt1 = 'default'
-        buttonType.bt2 = 'default'
-        buttonType.bt3 = 'default'
-        buttonType.bt4 = 'primary'
-        buttonType.bt5 = 'default'
+const onOutputs = () => {
+    buttonType.bt1 = 'primary'
+    buttonType.bt2 = 'default'
+    for (const key in query) {
+        query[key] = undefined
+    }
+    outputList()
+}
 
-    } else if (type == 4) {
-        buttonType.bt1 = 'default'
-        buttonType.bt2 = 'default'
-        buttonType.bt3 = 'default'
-        buttonType.bt4 = 'default'
-        buttonType.bt5 = 'primary'
-    } 
+const visibleFilter = ref(false)
+
+const onFilter = () => {
+    buttonType.bt1 = 'default'
+    buttonType.bt2 = 'primary'
+    visibleFilter.value = true
+}
+
+const confirmFilter = () => {
+    outputList()
+    visibleFilter.value = false
 }
 
 // 初始化数据
@@ -313,11 +328,12 @@ const onPagination = (page) => {
 }
 
 
-const outputList = (type) => {
-    setButtonType(type)
+const outputList = () => {
+    // setButtonType(query.type)
     let param = {
-        name: keyWord.value,
-        type: type,
+        name: query.name,
+        type: query.type,
+        status: query.status,
         pageNum: pagination.current,
         pageSize: pagination.pageSize,
     }

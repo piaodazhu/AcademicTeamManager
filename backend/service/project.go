@@ -33,6 +33,48 @@ func (service ProjectService) GetInfo(params *model.ProjectQueryParam) (*model.P
 	return projectInfo, response.ErrCodeSuccess
 }
 
+func (service ProjectService) UpdateOutputs(uid int64, params *model.ProjectOutputQueryParam) (*model.Outputslist, int) {
+	if len(params.Oids) == 0 {
+		return nil, response.ErrCodeSuccess
+	}
+	if params.Id != 0 && !service.dao.IsIdExists(uid, params.Id) {
+		return nil, response.ErrCodeFailed
+	}
+
+	// before, err := service.dao.GetProjectById(params.Id)
+	// if err != nil {
+	// 	return nil, response.ErrCodeFailed
+	// }
+
+	tmplist := make(model.Outputslist, 0)
+	newlist, err := service.output.GetListByIds(params.Oids)
+	for i := 0; i < len(newlist); i++ {
+		tmp := model.Outputs{
+			Id:     newlist[i].Id,
+			Name:   newlist[i].Name,
+			Type:   newlist[i].Type,
+			Weight: newlist[i].Weight,
+			Status: newlist[i].Status,
+		}
+		tmplist = append(tmplist, &tmp)
+	}
+	// before.Outputslist = &tmplist
+	
+	if params.Id != 0 {
+		// when create new project, project id is absent
+		// return the outputlist corresponding to Oid list
+		p := model.ProjectUpdateParam{
+			Id:          params.Id,
+			Outputslist: &tmplist,
+		}
+		err = service.dao.Update(&p)
+		if err != nil {
+			return nil, response.ErrCodeFailed
+		}
+	}
+	return &tmplist, response.ErrCodeSuccess
+}
+
 func (service ProjectService) Delete(params *model.ProjectDeleteParam) int {
 	if err := service.dao.Delete(params); err != nil {
 		return response.ErrCodeFailed
@@ -41,7 +83,7 @@ func (service ProjectService) Delete(params *model.ProjectDeleteParam) int {
 }
 
 func (service ProjectService) Create(uid int64, params *model.ProjectCreateParam) int {
-	if service.dao.IsExists(uid, params.Cid) {
+	if service.dao.IsExists(uid, params.Name) {
 		return response.ErrCodeFailed
 	}
 	if err := service.dao.Create(uid, params); err != nil {
@@ -89,30 +131,29 @@ func (service ProjectService) Export(uid int64) (string, int) {
 	return file, response.ErrCodeSuccess
 }
 
-// func (service ProjectService) GetOutputList(params *model.ProjectQueryParam) ([]*model.Outputs, int) {
+// func (service ProjectService) GetOutputList(params *model.ProjectOutputQueryParam) ([]*model.Outputs, int) {
 // 	if params.Id == 0 {
-// 		outputs, err := service.output.GetListByIds(params.Pids)
+// 		outputs, err := service.output.GetListByIds(params.Oids)
 // 		if err != nil {
 // 			return nil, response.ErrCodeFailed
 // 		}
 // 		return outputs, response.ErrCodeSuccess
 // 	}
 
-// 	// 默认已添加的产品列表
-// 	project, err := service.dao.GetAddedPList(params.Id)
+// 	before, err := service.dao.GetProjectById(params.Id)
 // 	if err != nil {
 // 		return nil, response.ErrCodeFailed
 // 	}
 
 // 	// 最终已添加的产品列表
-// 	addedOutputList := make([]*model.Outputs, 0)
+// 	newOutputList := make([]*model.Outputs, 0)
 
-// 	if len(params.Pids) == 0 {
-// 		return addedOutputList, response.ErrCodeSuccess
+// 	if len(params.Oids) == 0 {
+// 		return newOutputList, response.ErrCodeSuccess
 // 	}
 
 // 	addedPids := make([]int64, 0)
-// 	for _, pid := range params.Pids {
+// 	for _, pid := range params.Oids {
 // 		if len(*project.Outputlist) == 0 {
 // 			addedPids = params.Pids
 // 			break

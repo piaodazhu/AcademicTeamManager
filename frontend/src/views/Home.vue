@@ -140,12 +140,14 @@ const menuItem = reactive([{
     to: "/config",
     icon: ProfileOutlined,
     name: "通知配置"
-}, {
-    key: "subscribe",
-    to: "/subscribe",
-    icon: CrownOutlined,
-    name: "高级订阅"
-}])
+}, 
+// {
+//     key: "subscribe",
+//     to: "/subscribe",
+//     icon: CrownOutlined,
+//     name: "高级订阅"
+// }
+])
 
 // 表单校验
 const rules = {
@@ -195,7 +197,7 @@ const buttonText = ref('获取验证码')
 onBeforeMount(() => {
     store.selectedKeys = 'dashboard'
     router.push('dashboard')
-    noticeCount()
+    // noticeCount()
 })
 
 // 点击用户头像
