@@ -37,7 +37,7 @@ ATM mainly use Vue3 as frontend framework and Golang as backend framework.
 
 ### Frontend
 
-| 技术 | 说明 | 相关文档 |
+| Tech| Remark | Doc |
 |---|---|---|
 | Vue.js | Frontend framework | https://v3.cn.vuejs.org |
 | Vue Router | Page router | https://router.vuejs.org |
@@ -49,7 +49,7 @@ ATM mainly use Vue3 as frontend framework and Golang as backend framework.
 
 ### Backend
 
-| 技术 | 说明 | 相关文档 |
+| Tech | Remark | Doc |
 |---|---|---|
 | Gin | Web framework | https://gin-gonic.com |
 | Gorm | ORM framework | https://gorm.io |
