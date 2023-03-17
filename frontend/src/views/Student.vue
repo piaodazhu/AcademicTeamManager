@@ -145,7 +145,7 @@
                         <a-col :span="24">
                             <a-form-item label="上传附件" name="attachment">
                                 <a-upload-dragger v-model:fileList="fileList" name="file" :multiple="true"
-                                    :headers="{ 'X-Requested-With': null }" :action="action" @change="upload"
+                                    :headers="authHeader" :action="action" @change="upload"
                                     @drop="upload" @remove="remove">
                                     <p class="ant-upload-drag-icon">
                                         <inbox-outlined></inbox-outlined>
@@ -363,7 +363,12 @@ const disabled = ref(true)
 const operation = ref(0);
 const studentFormRef = ref();
 const visibleMail = ref(false)
-
+const authHeader = ref()
+authHeader.value = {
+    'X-Requested-With': null,
+    uid: localStorage.getItem('uid'),
+    token: localStorage.getItem('token'),
+}
 // 点击新建学生
 const onCreate = () => {
     title.value = '新建学生'
@@ -581,7 +586,9 @@ const onSend = () => {
 
 // 点击取消按钮
 const onCancel = () => {
-    studentFormRef.value.resetFields()
+    if (studentFormRef.value != undefined) {
+        studentFormRef.value.resetFields()
+    }
     visible.value = false
 }
 
